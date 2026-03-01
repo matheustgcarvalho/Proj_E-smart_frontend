@@ -66,7 +66,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
     <div className="min-h-screen bg-gradient-to-br from-[#e8f3ef] via-[#f0f7f4] to-[#e1ede8]">
       {/* Header Fixo */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-[1800px] mx-auto px-8 py-4">
+        <div className="w-full px-4 md:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
@@ -105,7 +105,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
       </div>
 
       {/* Conteúdo Principal com Sidebar */}
-      <div className="max-w-[1800px] mx-auto p-8">
+      <div className="w-full px-4 md:px-6 lg:px-8 py-6 md:py-8">
         <div className="flex gap-6">
           {/* Conteúdo Principal */}
           <div className="flex-1">

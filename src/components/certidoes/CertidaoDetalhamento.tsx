@@ -322,7 +322,7 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
     <div className="min-h-screen bg-[#f7f7f7]">
       {/* Header Fixo */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-[1400px] mx-auto px-8 py-4">
+        <div className="w-full px-4 md:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
@@ -351,7 +351,7 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
       </div>
 
       {/* Conteúdo Principal */}
-      <div className="max-w-[1400px] mx-auto p-8">
+      <div className="w-full px-4 md:px-6 lg:px-8 py-6 md:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Coluna Principal */}
           <div className="lg:col-span-2 space-y-6">
