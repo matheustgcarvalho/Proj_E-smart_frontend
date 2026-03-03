@@ -18,7 +18,11 @@ import {
   RefreshCw,
   CalendarDays,
   Clock,
-  ShieldCheck
+  ShieldCheck,
+  MapPin,
+  Users,
+  Hash,
+  FileCheck
 } from 'lucide-react';
 
 interface CaucViewProps {
@@ -44,6 +48,35 @@ export default function CaucView({ city }: CaucViewProps) {
     return groups;
   }, [caucItems]);
 
+  // Calcular situação geral do município
+  const situacaoGeral = pendingCount > 0 ? 'irregular' : warningCount > 0 ? 'atencao' : 'regular';
+  
+  const situacaoConfig = {
+    regular: { 
+      label: 'Regular', 
+      color: 'text-green-700', 
+      bg: 'bg-green-50', 
+      border: 'border-green-300',
+      icon: CheckCircle2 
+    },
+    atencao: { 
+      label: 'Atenção', 
+      color: 'text-yellow-700', 
+      bg: 'bg-yellow-50', 
+      border: 'border-yellow-300',
+      icon: AlertTriangle 
+    },
+    irregular: { 
+      label: 'Irregular', 
+      color: 'text-red-700', 
+      bg: 'bg-red-50', 
+      border: 'border-red-300',
+      icon: XCircle 
+    }
+  }[situacaoGeral];
+
+  const SituacaoIcon = situacaoConfig.icon;
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-12">
       {/* Cabeçalho */}
@@ -55,6 +88,181 @@ export default function CaucView({ city }: CaucViewProps) {
           <h1 className="text-3xl font-bold text-gray-900">CAUC - Cadastro Único de Convênios</h1>
           <p className="text-gray-500">Monitoramento de adimplência federal e regularidade fiscal</p>
         </div>
+      </div>
+
+      {/* Card de Informações do Município */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        {/* Grid de Informações */}
+        <div className="p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Município */}
+            <div className="group">
+              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                Município
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-xl font-bold text-gray-900">{city.name}</p>
+                  <p className="text-sm text-gray-500">{city.uf}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Região e Código IBGE */}
+            <div className="group">
+              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                Região
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-5 h-5 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-xl font-bold text-gray-900">{city.region || 'Nordeste'}</p>
+                  <p className="text-sm text-gray-500 font-mono">IBGE: {city.ibgeCode || 'N/A'}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* População */}
+            <div className="group">
+              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                População
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center flex-shrink-0">
+                  <Users className="w-5 h-5 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-xl font-bold text-gray-900">{city.population}</p>
+                  <p className="text-sm text-gray-500">habitantes</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Situação Geral */}
+            <div className="group">
+              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                Situação Geral
+              </div>
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                  situacaoGeral === 'regular' 
+                    ? 'bg-gradient-to-br from-green-50 to-green-100' 
+                    : situacaoGeral === 'atencao'
+                    ? 'bg-gradient-to-br from-yellow-50 to-yellow-100'
+                    : 'bg-gradient-to-br from-red-50 to-red-100'
+                }`}>
+                  <SituacaoIcon className={`w-5 h-5 ${
+                    situacaoGeral === 'regular' 
+                      ? 'text-green-600' 
+                      : situacaoGeral === 'atencao'
+                      ? 'text-yellow-600'
+                      : 'text-red-600'
+                  }`} />
+                </div>
+                <div>
+                  <p className={`text-xl font-bold ${situacaoConfig.color}`}>
+                    {situacaoConfig.label}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {pendingCount > 0 ? `${pendingCount} pendência${pendingCount !== 1 ? 's' : ''}` : 
+                     warningCount > 0 ? `${warningCount} alerta${warningCount !== 1 ? 's' : ''}` : 
+                     'Nenhuma pendência'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Última Atualização - Linha separada */}
+          <div className="mt-6 pt-6 border-t border-gray-100">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center flex-shrink-0">
+                  <CalendarDays className="w-5 h-5 text-gray-600" />
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                    Última Atualização
+                  </div>
+                  <p className="text-base font-bold text-gray-900">
+                    {city.caucLastUpdate 
+                      ? new Date(city.caucLastUpdate).toLocaleDateString('pt-BR', {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric'
+                        })
+                      : 'Não disponível'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Badge de Status Resumido */}
+              {situacaoGeral === 'irregular' && (
+                <div className="flex items-center gap-2 bg-red-50 text-red-700 px-4 py-2 rounded-xl border border-red-200">
+                  <XCircle className="w-4 h-4" />
+                  <span className="text-sm font-semibold">Ação Imediata Necessária</span>
+                </div>
+              )}
+              {situacaoGeral === 'atencao' && (
+                <div className="flex items-center gap-2 bg-yellow-50 text-yellow-700 px-4 py-2 rounded-xl border border-yellow-200">
+                  <AlertTriangle className="w-4 h-4" />
+                  <span className="text-sm font-semibold">Requer Atenção</span>
+                </div>
+              )}
+              {situacaoGeral === 'regular' && (
+                <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-xl border border-green-200">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span className="text-sm font-semibold">Tudo em Ordem</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Alertas Expandidos (apenas se houver) */}
+        {(situacaoGeral === 'irregular' || situacaoGeral === 'atencao') && (
+          <div className={`px-8 py-5 border-t ${
+            situacaoGeral === 'irregular' 
+              ? 'bg-gradient-to-r from-red-50/50 to-red-50/30 border-red-100' 
+              : 'bg-gradient-to-r from-yellow-50/50 to-yellow-50/30 border-yellow-100'
+          }`}>
+            <div className="flex items-start gap-4">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                situacaoGeral === 'irregular' ? 'bg-red-100' : 'bg-yellow-100'
+              }`}>
+                {situacaoGeral === 'irregular' ? (
+                  <XCircle className="w-5 h-5 text-red-600" />
+                ) : (
+                  <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                )}
+              </div>
+              <div className="flex-1">
+                <p className={`text-sm font-medium ${
+                  situacaoGeral === 'irregular' ? 'text-red-900' : 'text-yellow-900'
+                }`}>
+                  {situacaoGeral === 'irregular' ? (
+                    <>
+                      O município possui <strong>{pendingCount} pendência{pendingCount !== 1 ? 's' : ''} crítica{pendingCount !== 1 ? 's' : ''}</strong> que 
+                      {pendingCount !== 1 ? ' impedem' : ' impede'} a celebração de novos convênios. 
+                      Regularize imediatamente para evitar bloqueios nos repasses federais.
+                    </>
+                  ) : (
+                    <>
+                      Existem <strong>{warningCount} item{warningCount !== 1 ? 's' : ''}</strong> que 
+                      {warningCount !== 1 ? ' requerem' : ' requer'} atenção. 
+                      Monitore os prazos para evitar irregularidades futuras.
+                    </>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Header Section */}

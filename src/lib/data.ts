@@ -1,4 +1,3 @@
-
 export type Status = 'ok' | 'warning' | 'danger';
 
 export interface Indicator {
@@ -34,10 +33,13 @@ export interface CityData {
   id: string;
   name: string;
   uf: string;
-  cauc: CaucData;
-  parcerias: ParceriasData;
+  region?: string;
+  ibgeCode?: string;
   population: string;
   gdp: string;
+  caucLastUpdate?: string;
+  cauc: CaucData;
+  parcerias: ParceriasData;
 }
 
 export const CITIES: CityData[] = [
@@ -45,8 +47,11 @@ export const CITIES: CityData[] = [
     id: 'fortaleza',
     name: 'Fortaleza',
     uf: 'CE',
+    region: 'Nordeste',
+    ibgeCode: '2304400',
     population: '2.7 mi',
     gdp: 'R$ 67 bi',
+    caucLastUpdate: '2026-02-28',
     cauc: {
       lrfScore: 92,
       adimplencia: [
@@ -78,8 +83,11 @@ export const CITIES: CityData[] = [
     id: 'sobral',
     name: 'Sobral',
     uf: 'CE',
+    region: 'Nordeste',
+    ibgeCode: '2311600',
     population: '210 mil',
     gdp: 'R$ 5 bi',
+    caucLastUpdate: '2026-02-28',
     cauc: {
       lrfScore: 98,
       adimplencia: [
@@ -109,8 +117,11 @@ export const CITIES: CityData[] = [
     id: 'caucaia',
     name: 'Caucaia',
     uf: 'CE',
+    region: 'Nordeste',
+    ibgeCode: '2301600',
     population: '365 mil',
     gdp: 'R$ 10 bi',
+    caucLastUpdate: '2026-02-28',
     cauc: {
       lrfScore: 75,
       adimplencia: [
@@ -140,8 +151,11 @@ export const CITIES: CityData[] = [
     id: 'maracanau',
     name: 'Maracanaú',
     uf: 'CE',
+    region: 'Nordeste',
+    ibgeCode: '2308102',
     population: '229 mil',
     gdp: 'R$ 9 bi',
+    caucLastUpdate: '2026-02-28',
     cauc: {
       lrfScore: 88,
       adimplencia: [
