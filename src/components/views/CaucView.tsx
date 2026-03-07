@@ -22,7 +22,8 @@ import {
   MapPin,
   Users,
   Hash,
-  FileCheck
+  FileCheck,
+  Download
 } from 'lucide-react';
 
 interface CaucViewProps {
@@ -85,152 +86,95 @@ export default function CaucView({ city }: CaucViewProps) {
           <ShieldCheck className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">CAUC - Cadastro Único de Convênios</h1>
-          <p className="text-gray-500">Monitoramento de adimplência federal e regularidade fiscal</p>
+          <h1 className="text-3xl font-bold text-gray-900">Cauc-SNT</h1>
+          <p className="text-gray-500">Sistema de Informações sobre Requisitos Fiscais</p>
         </div>
       </div>
 
-      {/* Card de Informações do Município */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {/* Grid de Informações */}
-        <div className="p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Município */}
-            <div className="group">
-              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                Município
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-xl font-bold text-gray-900">{city.name}</p>
-                  <p className="text-sm text-gray-500">{city.uf}</p>
-                </div>
-              </div>
+      {/* Card de Informações do Município - Compacto */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div className="flex flex-wrap items-center gap-8">
+          {/* Município e UF */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0">
+              <MapPin className="w-5 h-5 text-blue-600" />
             </div>
-
-            {/* Região e Código IBGE */}
-            <div className="group">
-              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                Região
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-xl font-bold text-gray-900">{city.region || 'Nordeste'}</p>
-                  <p className="text-sm text-gray-500 font-mono">IBGE: {city.ibgeCode || 'N/A'}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* População */}
-            <div className="group">
-              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                População
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center flex-shrink-0">
-                  <Users className="w-5 h-5 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-xl font-bold text-gray-900">{city.population}</p>
-                  <p className="text-sm text-gray-500">habitantes</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Situação Geral */}
-            <div className="group">
-              <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                Situação Geral
-              </div>
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                  situacaoGeral === 'regular' 
-                    ? 'bg-gradient-to-br from-green-50 to-green-100' 
-                    : situacaoGeral === 'atencao'
-                    ? 'bg-gradient-to-br from-yellow-50 to-yellow-100'
-                    : 'bg-gradient-to-br from-red-50 to-red-100'
-                }`}>
-                  <SituacaoIcon className={`w-5 h-5 ${
-                    situacaoGeral === 'regular' 
-                      ? 'text-green-600' 
-                      : situacaoGeral === 'atencao'
-                      ? 'text-yellow-600'
-                      : 'text-red-600'
-                  }`} />
-                </div>
-                <div>
-                  <p className={`text-xl font-bold ${situacaoConfig.color}`}>
-                    {situacaoConfig.label}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {pendingCount > 0 ? `${pendingCount} pendência${pendingCount !== 1 ? 's' : ''}` : 
-                     warningCount > 0 ? `${warningCount} alerta${warningCount !== 1 ? 's' : ''}` : 
-                     'Nenhuma pendência'}
-                  </p>
-                </div>
-              </div>
+            <div>
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Município</div>
+              <p className="text-lg font-bold text-gray-900">{city.name} - {city.uf}</p>
             </div>
           </div>
 
-          {/* Última Atualização - Linha separada */}
-          <div className="mt-6 pt-6 border-t border-gray-100">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center flex-shrink-0">
-                  <CalendarDays className="w-5 h-5 text-gray-600" />
-                </div>
-                <div>
-                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-                    Última Atualização
-                  </div>
-                  <p className="text-base font-bold text-gray-900">
-                    {city.caucLastUpdate 
-                      ? new Date(city.caucLastUpdate).toLocaleDateString('pt-BR', {
-                          day: '2-digit',
-                          month: 'long',
-                          year: 'numeric'
-                        })
-                      : 'Não disponível'}
-                  </p>
-                </div>
-              </div>
+          {/* Região e IBGE */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center flex-shrink-0">
+              <MapPin className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Região / IBGE</div>
+              <p className="text-lg font-bold text-gray-900">{city.region || 'Nordeste'} <span className="font-mono text-sm text-gray-500">· {city.ibgeCode || 'N/A'}</span></p>
+            </div>
+          </div>
 
-              {/* Badge de Status Resumido */}
-              {situacaoGeral === 'irregular' && (
-                <div className="flex items-center gap-2 bg-red-50 text-red-700 px-4 py-2 rounded-xl border border-red-200">
-                  <XCircle className="w-4 h-4" />
-                  <span className="text-sm font-semibold">Ação Imediata Necessária</span>
-                </div>
-              )}
-              {situacaoGeral === 'atencao' && (
-                <div className="flex items-center gap-2 bg-yellow-50 text-yellow-700 px-4 py-2 rounded-xl border border-yellow-200">
-                  <AlertTriangle className="w-4 h-4" />
-                  <span className="text-sm font-semibold">Requer Atenção</span>
-                </div>
-              )}
-              {situacaoGeral === 'regular' && (
-                <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-xl border border-green-200">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span className="text-sm font-semibold">Tudo em Ordem</span>
-                </div>
-              )}
+          {/* População */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center flex-shrink-0">
+              <Users className="w-5 h-5 text-orange-600" />
+            </div>
+            <div>
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">População</div>
+              <p className="text-lg font-bold text-gray-900">{city.population}</p>
+            </div>
+          </div>
+
+          {/* Situação Geral */}
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+              situacaoGeral === 'regular' 
+                ? 'bg-gradient-to-br from-green-50 to-green-100' 
+                : situacaoGeral === 'atencao'
+                ? 'bg-gradient-to-br from-yellow-50 to-yellow-100'
+                : 'bg-gradient-to-br from-red-50 to-red-100'
+            }`}>
+              <SituacaoIcon className={`w-5 h-5 ${
+                situacaoGeral === 'regular' 
+                  ? 'text-green-600' 
+                  : situacaoGeral === 'atencao'
+                  ? 'text-yellow-600'
+                  : 'text-red-600'
+              }`} />
+            </div>
+            <div>
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Situação Geral</div>
+              <p className={`text-lg font-bold ${situacaoConfig.color}`}>
+                {situacaoConfig.label}
+              </p>
+            </div>
+          </div>
+
+          {/* Última Atualização */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center flex-shrink-0">
+              <CalendarDays className="w-5 h-5 text-gray-600" />
+            </div>
+            <div>
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Última Atualização</div>
+              <p className="text-lg font-bold text-gray-900">
+                {city.caucLastUpdate 
+                  ? new Date(city.caucLastUpdate).toLocaleDateString('pt-BR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric'
+                    })
+                  : 'N/A'}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Alertas Expandidos (apenas se houver) */}
         {(situacaoGeral === 'irregular' || situacaoGeral === 'atencao') && (
-          <div className={`px-8 py-5 border-t ${
-            situacaoGeral === 'irregular' 
-              ? 'bg-gradient-to-r from-red-50/50 to-red-50/30 border-red-100' 
-              : 'bg-gradient-to-r from-yellow-50/50 to-yellow-50/30 border-yellow-100'
-          }`}>
+          <div className={`mt-6 pt-6 border-t border-gray-100`}>
             <div className="flex items-start gap-4">
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
                 situacaoGeral === 'irregular' ? 'bg-red-100' : 'bg-yellow-100'
@@ -265,29 +209,62 @@ export default function CaucView({ city }: CaucViewProps) {
         )}
       </div>
 
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-           <h2 className="text-2xl font-bold text-[#1a3e3e]">Monitoramento CAUC-SNT</h2>
-           <p className="text-[#626262]">Acompanhamento oficial dos requisitos fiscais do Tesouro Nacional</p>
-        </div>
-        
+      {/* Botões de Ação Global */}
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {/* Summary Badges */}
-          <div className="flex items-center gap-2">
-             <div className="bg-red-50 text-red-700 px-3 py-1.5 rounded-lg border border-red-100 flex items-center gap-2 text-sm font-bold shadow-sm">
-                <AlertTriangle className="w-4 h-4" />
-                <span>{pendingCount} Pendências</span>
-             </div>
-             <div className="bg-[#e8a455]/10 text-[#e8a455] px-3 py-1.5 rounded-lg border border-[#e8a455]/20 flex items-center gap-2 text-sm font-bold shadow-sm">
-                <Clock className="w-4 h-4" />
-                <span>{expiringSoonCount} vencem em 7 dias</span>
-             </div>
+          <div className="bg-red-50 text-red-700 px-4 py-2 rounded-lg border border-red-100 flex items-center gap-2 text-sm font-bold shadow-sm">
+            <AlertTriangle className="w-4 h-4" />
+            <span>{pendingCount} Pendências</span>
           </div>
+        </div>
 
-          <button className="flex items-center gap-2 bg-[#2e6a50] hover:bg-[#1a3e3e] text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-[#2e6a50]/20 active:scale-95">
-             <RefreshCw className="w-4 h-4" />
-             <span className="hidden md:inline">Sincronizar STN</span>
+        <div className="flex items-center gap-3">
+          {/* Botão Histórico */}
+          <button 
+            onClick={() => alert('Abrir histórico de atualizações')}
+            className="group relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 hover:from-slate-100 hover:to-slate-200 border border-slate-200 transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95"
+            title="Histórico"
+          >
+            <History className="w-5 h-5 text-slate-600 group-hover:text-slate-700 transition-colors" />
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg">
+              Histórico
+            </span>
+          </button>
+
+          {/* Botão Notificar */}
+          <button 
+            onClick={() => alert('Notificar responsáveis sobre pendências')}
+            className="group relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100 hover:from-amber-100 hover:to-amber-200 border border-amber-200 transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95"
+            title="Notificar"
+          >
+            <Bell className="w-5 h-5 text-amber-600 group-hover:text-amber-700 transition-colors" />
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg">
+              Notificar
+            </span>
+          </button>
+
+          {/* Botão Acessar CAUC-SNT */}
+          <button 
+            onClick={() => window.open('https://www.gov.br/tesouronacional/pt-br/sistemas/cauc-snt', '_blank')}
+            className="group relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 border border-blue-200 transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95"
+            title="Acessar CAUC-SNT"
+          >
+            <ExternalLink className="w-5 h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg z-10">
+              Acessar CAUC-SNT
+            </span>
+          </button>
+
+          {/* Separador */}
+          <div className="h-8 w-px bg-gray-300 mx-1"></div>
+
+          {/* Botão Baixar Relatório */}
+          <button 
+            onClick={() => alert('Baixando relatório completo...')}
+            className="flex items-center gap-2.5 bg-gradient-to-br from-[#2e6a50] to-[#1a3e3e] hover:from-[#1a3e3e] hover:to-[#0f2420] text-white px-5 py-2.5 rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-[#2e6a50]/25 hover:shadow-xl hover:shadow-[#2e6a50]/40 active:scale-95 hover:scale-105"
+          >
+            <Download className="w-5 h-5" />
+            <span>Baixar Relatório</span>
           </button>
         </div>
       </div>
@@ -322,129 +299,104 @@ export default function CaucView({ city }: CaucViewProps) {
 function CaucItemRow({ item }: { item: CaucItem }) {
   const daysRemaining = getDaysRemaining(item.expiresAt);
   
-  // Status Logic
+  // Status Logic - Ajustado para novos labels
   const statusConfig = {
-    regular: { icon: CheckCircle2, color: 'text-[#2e6a50]', bg: 'bg-[#2e6a50]/10', label: 'Regular' },
-    warning: { icon: AlertTriangle, color: 'text-[#e8a455]', bg: 'bg-[#e8a455]/10', label: 'Alerta' },
-    critical: { icon: XCircle, color: 'text-red-600', bg: 'bg-red-50', label: 'Pendente' }
+    regular: { 
+      icon: CheckCircle2, 
+      color: 'text-[#2e6a50]', 
+      bg: 'bg-[#2e6a50]/10', 
+      label: 'CONFIRMADO',
+      badgeBg: 'bg-green-50',
+      badgeText: 'text-green-700',
+      badgeBorder: 'border-green-300'
+    },
+    warning: { 
+      icon: AlertTriangle, 
+      color: 'text-[#e8a455]', 
+      bg: 'bg-[#e8a455]/10', 
+      label: 'ATENÇÃO',
+      badgeBg: 'bg-yellow-50',
+      badgeText: 'text-yellow-700',
+      badgeBorder: 'border-yellow-300'
+    },
+    critical: { 
+      icon: XCircle, 
+      color: 'text-red-600', 
+      bg: 'bg-red-50', 
+      label: 'IRREGULAR',
+      badgeBg: 'bg-red-50',
+      badgeText: 'text-red-700',
+      badgeBorder: 'border-red-300'
+    }
   }[item.status];
 
   const StatusIcon = statusConfig.icon;
 
   return (
     <div className="p-5 hover:bg-[#f7f7f7]/50 transition-colors group">
-      <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+      <div className="flex items-center justify-between gap-8">
         
-        {/* Left: Status & Description */}
-        <div className="flex-1 flex items-start gap-4">
-           <div className={`mt-1 w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${statusConfig.bg} ${statusConfig.color}`}>
-              <StatusIcon className="w-5 h-5" />
-           </div>
-           <div>
-              <h4 className="font-bold text-[#1a3e3e] text-base leading-tight mb-1">
-                {item.description}
-              </h4>
-              <div className="flex items-center gap-2 text-sm text-[#626262]">
-                 <span className="font-medium bg-[#f7f7f7] px-2 py-0.5 rounded text-xs border border-[#bbbbbb]/20">
-                   {item.source}
-                 </span>
-                 {item.status === 'critical' && (
-                   <span className="text-red-600 font-bold text-xs uppercase tracking-wide">Ação Necessária</span>
-                 )}
-              </div>
-           </div>
+        {/* Left: Icon + Description */}
+        <div className="flex items-start gap-4 flex-1 min-w-0">
+          <div className={`w-10 h-10 rounded-lg ${statusConfig.bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+            <StatusIcon className={`w-5 h-5 ${statusConfig.color}`} />
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <h4 className="font-bold text-[#1a3e3e] text-base leading-tight mb-1.5">
+              {item.description}
+            </h4>
+            <div className="flex items-center gap-2 text-sm text-[#626262]">
+              <span className="font-medium bg-[#f7f7f7] px-2 py-0.5 rounded text-xs border border-[#bbbbbb]/20">
+                {item.source}
+              </span>
+              {item.status === 'critical' && (
+                <span className="text-red-600 font-bold text-xs uppercase tracking-wide">Ação Necessária</span>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Middle: Dates & Countdown */}
-        <div className="flex items-center gap-8 shrink-0 min-w-[300px]">
-           <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs text-[#bbbbbb] uppercase font-bold">
-                 <CalendarDays className="w-3 h-3" />
-                 Emissão
-              </div>
-              <p className="text-sm font-medium text-[#1a3e3e]">
-                {new Date(item.issuedAt).toLocaleDateString('pt-BR')}
-              </p>
-           </div>
+        {/* Right: Emissão, Validade e Status - Design Moderno */}
+        <div className="flex items-center gap-4 shrink-0">
+          {/* Emissão */}
+          <div className="flex flex-col items-end">
+            <div className="flex items-center gap-1.5 mb-1">
+              <CalendarDays className="w-3.5 h-3.5 text-gray-400" />
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Emissão</span>
+            </div>
+            <span className="text-sm font-bold text-[#1a3e3e]">
+              {new Date(item.issuedAt).toLocaleDateString('pt-BR')}
+            </span>
+          </div>
 
-           <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs text-[#bbbbbb] uppercase font-bold">
-                 <Clock className="w-3 h-3" />
-                 Validade
-              </div>
-              <div className="flex items-center gap-2">
-                <p className={`text-sm font-medium ${daysRemaining < 0 ? 'text-red-600' : 'text-[#1a3e3e]'}`}>
-                  {new Date(item.expiresAt).toLocaleDateString('pt-BR')}
-                </p>
-                {/* Countdown Badge */}
-                {item.status !== 'critical' && (
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                    daysRemaining <= 7 
-                      ? 'bg-[#e8a455]/10 text-[#e8a455] border-[#e8a455]/20' 
-                      : 'bg-[#2e6a50]/10 text-[#2e6a50] border-[#2e6a50]/20'
-                  }`}>
-                    {daysRemaining} dias
-                  </span>
-                )}
-              </div>
-           </div>
-        </div>
+          {/* Separador */}
+          <div className="h-10 w-px bg-gray-200"></div>
 
-        {/* Right: Actions */}
-        <div className="flex items-center gap-2 shrink-0 lg:border-l lg:border-[#bbbbbb]/20 lg:pl-6">
-           <ActionButton 
-             icon={ExternalLink} 
-             label="Regularizar" 
-             onClick={() => window.open(item.externalLink, '_blank')}
-             variant="primary"
-           />
-           <ActionButton 
-             icon={Bell} 
-             label="Notificar" 
-             onClick={() => alert(`Notificando responsável sobre: ${item.description}`)}
-           />
-           <ActionButton 
-             icon={UploadCloud} 
-             label="Upload" 
-             onClick={() => alert('Abrir modal de upload')}
-           />
-           <ActionButton 
-             icon={History} 
-             label="Histórico" 
-             onClick={() => alert('Ver histórico')}
-           />
+          {/* Validade */}
+          <div className="flex flex-col items-end">
+            <div className="flex items-center gap-1.5 mb-1">
+              <Clock className="w-3.5 h-3.5 text-gray-400" />
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Validade</span>
+            </div>
+            <span className={`text-sm font-bold ${daysRemaining < 0 ? 'text-red-600' : 'text-[#1a3e3e]'}`}>
+              {new Date(item.expiresAt).toLocaleDateString('pt-BR')}
+            </span>
+          </div>
+
+          {/* Separador */}
+          <div className="h-10 w-px bg-gray-200"></div>
+
+          {/* Status Badge */}
+          <div className="min-w-[130px]">
+            <div className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg border-2 ${statusConfig.badgeBg} ${statusConfig.badgeText} ${statusConfig.badgeBorder} transition-all duration-200`}>
+              <StatusIcon className="w-4 h-4" />
+              <span className="text-xs font-bold tracking-wide">{statusConfig.label}</span>
+            </div>
+          </div>
         </div>
 
       </div>
     </div>
-  );
-}
-
-interface ActionButtonProps {
-  icon: React.ElementType;
-  label: string;
-  onClick: () => void;
-  variant?: 'primary' | 'secondary';
-}
-
-function ActionButton({ icon: Icon, label, onClick, variant = 'secondary' }: ActionButtonProps) {
-  const baseStyles = "flex items-center justify-center w-9 h-9 rounded-lg transition-all duration-200 border";
-  const variants = {
-    primary: "bg-[#2e6a50]/10 text-[#2e6a50] border-[#2e6a50]/20 hover:bg-[#2e6a50] hover:text-white hover:shadow-md",
-    secondary: "bg-white text-[#626262] border-[#bbbbbb]/30 hover:bg-[#f7f7f7] hover:border-[#2e6a50]/50 hover:text-[#2e6a50]"
-  };
-
-  return (
-    <button 
-      onClick={onClick}
-      className={`${baseStyles} ${variants[variant]} group/btn relative`}
-      title={label}
-    >
-      <Icon className="w-4 h-4" />
-      {/* Tooltip */}
-      <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-[#1a3e3e] text-white text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
-        {label}
-      </span>
-    </button>
   );
 }

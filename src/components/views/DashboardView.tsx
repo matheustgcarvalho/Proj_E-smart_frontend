@@ -364,8 +364,8 @@ export default function DashboardView({ city, onNavigate }: DashboardViewProps) 
             <p className="text-xs font-bold text-gray-400 uppercase mb-2">Pendências Críticas</p>
             {caucPendencias.length > 0 ? (
               <ul className="space-y-2">
-                {caucPendencias.slice(0, 2).map((item, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-red-700 bg-red-50 p-2 rounded">
+                {caucPendencias.slice(0, 2).map((item) => (
+                  <li key={item.id} className="flex items-start gap-2 text-xs text-red-700 bg-red-50 p-2 rounded">
                     <AlertTriangle className="w-3 h-3 mt-0.5 shrink-0" />
                     <span className="line-clamp-1">{item.description}</span>
                   </li>
@@ -403,8 +403,8 @@ export default function DashboardView({ city, onNavigate }: DashboardViewProps) 
           <div className="mt-auto relative z-10">
             <p className="text-xs font-bold text-gray-400 uppercase mb-2">Próximos Vencimentos</p>
             <div className="space-y-3">
-              {conveniosVencendo.map((conv, i) => (
-                <div key={i} className="flex items-center justify-between text-xs">
+              {conveniosVencendo.map((conv) => (
+                <div key={conv.id} className="flex items-center justify-between text-xs">
                   <div className="flex-1 min-w-0 pr-2">
                     <p className="font-medium text-gray-900 truncate">{conv.object}</p>
                     <p className="text-gray-500 text-[10px]">{conv.agency}</p>
@@ -431,10 +431,10 @@ export default function DashboardView({ city, onNavigate }: DashboardViewProps) 
           <div className="flex-1 overflow-hidden">
              {certidoesVencidasOrWarning.length > 0 ? (
                <div className="space-y-4">
-                 {certidoesVencidasOrWarning.slice(0, 4).map((cert, i) => {
+                 {certidoesVencidasOrWarning.slice(0, 4).map((cert) => {
                    const days = getDaysRemaining(cert.expirationDate);
                    return (
-                     <div key={i} className="flex items-start gap-3">
+                     <div key={cert.id} className="flex items-start gap-3">
                        <div className={`mt-1 w-2 h-2 rounded-full shrink-0 ${days < 0 ? 'bg-red-500' : 'bg-amber-500'}`} />
                        <div className="flex-1">
                          <div className="flex justify-between items-start">
