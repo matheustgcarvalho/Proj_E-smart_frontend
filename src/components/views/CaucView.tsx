@@ -312,18 +312,18 @@ function CaucItemRow({ item }: { item: CaucItem }) {
     },
     warning: { 
       icon: AlertTriangle, 
-      color: 'text-[#e8a455]', 
-      bg: 'bg-[#e8a455]/10', 
-      label: 'ATENÇÃO',
-      badgeBg: 'bg-yellow-50',
-      badgeText: 'text-yellow-700',
-      badgeBorder: 'border-yellow-300'
+      color: 'text-gray-500', 
+      bg: 'bg-gray-100', 
+      label: 'DESABILITADO',
+      badgeBg: 'bg-gray-100',
+      badgeText: 'text-gray-600',
+      badgeBorder: 'border-gray-300'
     },
     critical: { 
       icon: XCircle, 
       color: 'text-red-600', 
       bg: 'bg-red-50', 
-      label: 'IRREGULAR',
+      label: 'A CONFIRMAR',
       badgeBg: 'bg-red-50',
       badgeText: 'text-red-700',
       badgeBorder: 'border-red-300'
