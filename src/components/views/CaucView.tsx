@@ -35,7 +35,6 @@ export default function CaucView({ city }: CaucViewProps) {
   
   // Calculate Summaries
   const pendingCount = caucItems.filter(i => i.status === 'critical').length;
-  const warningCount = caucItems.filter(i => i.status === 'warning').length;
   const expiringSoonCount = caucItems.filter(i => {
     const days = getDaysRemaining(i.expiresAt);
     return days > 0 && days <= 7;
@@ -50,7 +49,7 @@ export default function CaucView({ city }: CaucViewProps) {
   }, [caucItems]);
 
   // Calcular situação geral do município
-  const situacaoGeral = pendingCount > 0 ? 'irregular' : warningCount > 0 ? 'atencao' : 'regular';
+  const situacaoGeral = pendingCount > 0 ? 'irregular' : 'regular';
   
   const situacaoConfig = {
     regular: { 
@@ -59,13 +58,6 @@ export default function CaucView({ city }: CaucViewProps) {
       bg: 'bg-green-50', 
       border: 'border-green-300',
       icon: CheckCircle2 
-    },
-    atencao: { 
-      label: 'Atenção', 
-      color: 'text-yellow-700', 
-      bg: 'bg-yellow-50', 
-      border: 'border-yellow-300',
-      icon: AlertTriangle 
     },
     irregular: { 
       label: 'Irregular', 
@@ -132,15 +124,11 @@ export default function CaucView({ city }: CaucViewProps) {
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
               situacaoGeral === 'regular' 
                 ? 'bg-gradient-to-br from-green-50 to-green-100' 
-                : situacaoGeral === 'atencao'
-                ? 'bg-gradient-to-br from-yellow-50 to-yellow-100'
                 : 'bg-gradient-to-br from-red-50 to-red-100'
             }`}>
               <SituacaoIcon className={`w-5 h-5 ${
                 situacaoGeral === 'regular' 
                   ? 'text-green-600' 
-                  : situacaoGeral === 'atencao'
-                  ? 'text-yellow-600'
                   : 'text-red-600'
               }`} />
             </div>
@@ -173,7 +161,7 @@ export default function CaucView({ city }: CaucViewProps) {
         </div>
 
         {/* Alertas Expandidos (apenas se houver) */}
-        {(situacaoGeral === 'irregular' || situacaoGeral === 'atencao') && (
+        {(situacaoGeral === 'irregular') && (
           <div className={`mt-6 pt-6 border-t border-gray-100`}>
             <div className="flex items-start gap-4">
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
@@ -197,8 +185,8 @@ export default function CaucView({ city }: CaucViewProps) {
                     </>
                   ) : (
                     <>
-                      Existem <strong>{warningCount} item{warningCount !== 1 ? 's' : ''}</strong> que 
-                      {warningCount !== 1 ? ' requerem' : ' requer'} atenção. 
+                      Existem <strong>{pendingCount} item{pendingCount !== 1 ? 's' : ''}</strong> que 
+                      {pendingCount !== 1 ? ' requerem' : ' requer'} atenção. 
                       Monitore os prazos para evitar irregularidades futuras.
                     </>
                   )}
