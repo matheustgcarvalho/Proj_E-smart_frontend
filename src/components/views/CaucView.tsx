@@ -293,7 +293,7 @@ function CaucItemRow({ item }: { item: CaucItem }) {
       icon: CheckCircle2, 
       color: 'text-[#2e6a50]', 
       bg: 'bg-[#2e6a50]/10', 
-      label: 'CONFIRMADO',
+      label: 'COMPROVADO',
       badgeBg: 'bg-green-50',
       badgeText: 'text-green-700',
       badgeBorder: 'border-green-300'
@@ -311,7 +311,7 @@ function CaucItemRow({ item }: { item: CaucItem }) {
       icon: XCircle, 
       color: 'text-red-600', 
       bg: 'bg-red-50', 
-      label: 'A CONFIRMAR',
+      label: 'A COMPROVAR',
       badgeBg: 'bg-red-50',
       badgeText: 'text-red-700',
       badgeBorder: 'border-red-300'
