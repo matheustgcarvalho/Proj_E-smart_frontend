@@ -15,7 +15,10 @@ import {
   Building2,
   Search,
   Filter,
-  X
+  X,
+  PlayCircle,
+  ShieldAlert,
+  Ban
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
@@ -57,6 +60,37 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
   const [vigenciaFilter, setVigenciaFilter] = useState<string>('todos');
 
   const conveniosData = CONVENIOS_DATA[city.id] || CONVENIOS_DATA['fortaleza'];
+
+  // Calcular KPIs adicionais
+  const conveniosAtivos = useMemo(() => {
+    const estaduaisAtivos = conveniosData.estaduais.filter(c => c.status === 'Em Execução').length;
+    const federaisAtivos = conveniosData.federais.filter(c => c.status === 'Em Execução').length;
+    return estaduaisAtivos + federaisAtivos;
+  }, [conveniosData]);
+
+  const conveniosIrregulares = useMemo(() => {
+    const estaduaisIrregulares = conveniosData.estaduais.filter(c => c.status === 'Inadimplente' || c.temIrregularidade).length;
+    const federaisIrregulares = conveniosData.federais.filter(c => c.status === 'Inadimplente' || c.temIrregularidade).length;
+    return estaduaisIrregulares + federaisIrregulares;
+  }, [conveniosData]);
+
+  const conveniosBloqueados = useMemo(() => {
+    const estaduaisBloqueados = conveniosData.estaduais.filter(c => c.status === 'Suspenso').length;
+    const federaisBloqueados = conveniosData.federais.filter(c => c.status === 'Suspenso').length;
+    return estaduaisBloqueados + federaisBloqueados;
+  }, [conveniosData]);
+
+  const vigenciasVencer90Dias = useMemo(() => {
+    const estaduaisVencendo = conveniosData.estaduais.filter(c => {
+      const dias = calcularDiasRestantes(c.vigenciaFim);
+      return dias > 0 && dias <= 90;
+    }).length;
+    const federaisVencendo = conveniosData.federais.filter(c => {
+      const dias = calcularDiasRestantes(c.vigenciaFim);
+      return dias > 0 && dias <= 90;
+    }).length;
+    return estaduaisVencendo + federaisVencendo;
+  }, [conveniosData]);
 
   // Listas únicas para os filtros
   const instituicoesEstaduais = useMemo(() => {
@@ -201,64 +235,118 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
       </div>
 
       {/* Cards KPI */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total em Convênios</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatarMoeda(conveniosData.kpis.valorTotal)}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {conveniosData.kpis.totalConvenios} convênios ativos
-            </p>
-          </CardContent>
-        </Card>
+      <div className="space-y-4">
+        {/* Linha 1 - Cards Financeiros (4 cards iguais) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Total de Convênios */}
+          <Card className="border-gray-200 hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-4">
+              <CardTitle className="text-sm font-medium text-gray-700">Total de Convênios</CardTitle>
+              <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
+                <DollarSign className="h-4 w-4 text-gray-700" />
+              </div>
+            </CardHeader>
+            <CardContent className="pb-3">
+              <div className="text-2xl font-bold text-gray-900">{formatarMoeda(conveniosData.kpis.valorTotal)}</div>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {conveniosData.kpis.totalConvenios} convênios cadastrados
+              </p>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Recursos a Receber</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {formatarMoeda(conveniosData.kpis.recursosReceber)}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Aguardando liberação
-            </p>
-          </CardContent>
-        </Card>
+          {/* Recursos a Receber */}
+          <Card className="border-gray-200 hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-4">
+              <CardTitle className="text-sm font-medium text-gray-700">Recursos a Receber</CardTitle>
+              <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center">
+                <TrendingUp className="h-4 w-4 text-green-700" />
+              </div>
+            </CardHeader>
+            <CardContent className="pb-3">
+              <div className="text-2xl font-bold text-gray-900">
+                {formatarMoeda(conveniosData.kpis.recursosReceber)}
+              </div>
+              <p className="text-xs text-gray-500 mt-0.5">Aguardando liberação</p>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Contrapartidas Pendentes</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-orange-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
-              {formatarMoeda(conveniosData.kpis.contrapartidasPendentes)}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Depósito municipal necessário
-            </p>
-          </CardContent>
-        </Card>
+          {/* Contrapartidas Pendentes */}
+          <Card className="border-gray-200 hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-4">
+              <CardTitle className="text-sm font-medium text-gray-700">Contrapartidas Pendentes</CardTitle>
+              <div className="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center">
+                <AlertTriangle className="h-4 w-4 text-orange-700" />
+              </div>
+            </CardHeader>
+            <CardContent className="pb-3">
+              <div className="text-2xl font-bold text-gray-900">
+                {formatarMoeda(conveniosData.kpis.contrapartidasPendentes)}
+              </div>
+              <p className="text-xs text-gray-500 mt-0.5">Depósito municipal</p>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Vigências Próximas</CardTitle>
-            <Clock className="h-4 w-4 text-red-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
-              {conveniosData.kpis.vigenciasProximasFim}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Expiram em menos de 60 dias
-            </p>
-          </CardContent>
-        </Card>
+          {/* Vigência a vencer em até 90 dias */}
+          <Card className="border-gray-200 hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-4">
+              <CardTitle className="text-sm font-medium text-gray-700">Vigência a Vencer</CardTitle>
+              <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center">
+                <Clock className="h-4 w-4 text-purple-700" />
+              </div>
+            </CardHeader>
+            <CardContent className="pb-3">
+              <div className="text-2xl font-bold text-gray-900">
+                {vigenciasVencer90Dias}
+              </div>
+              <p className="text-xs text-gray-500 mt-0.5">Próximos 90 dias</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Linha 2 - Cards de Status (3 cards iguais) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Convênios Ativos */}
+          <Card className="bg-green-50 border-green-200 hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
+              <CardTitle className="text-xs font-medium text-gray-700">Convênios Ativos</CardTitle>
+              <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center">
+                <PlayCircle className="h-3.5 w-3.5 text-green-700" />
+              </div>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="text-xl font-bold text-green-700">{conveniosAtivos}</div>
+              <p className="text-[10px] text-gray-500 mt-0">Em execução</p>
+            </CardContent>
+          </Card>
+
+          {/* Convênios Irregulares */}
+          <Card className="bg-red-50 border-red-200 hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
+              <CardTitle className="text-xs font-medium text-gray-700">Convênios Irregulares</CardTitle>
+              <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center">
+                <ShieldAlert className="h-3.5 w-3.5 text-red-700" />
+              </div>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="text-xl font-bold text-red-700">{conveniosIrregulares}</div>
+              <p className="text-[10px] text-gray-500 mt-0">Com pendências</p>
+            </CardContent>
+          </Card>
+
+          {/* Convênios Bloqueados */}
+          <Card className="bg-gray-50 border-gray-200 hover:shadow-md transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
+              <CardTitle className="text-xs font-medium text-gray-700">Convênios Bloqueados</CardTitle>
+              <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center">
+                <Ban className="h-3.5 w-3.5 text-gray-700" />
+              </div>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="text-xl font-bold text-gray-700">{conveniosBloqueados}</div>
+              <p className="text-[10px] text-gray-500 mt-0">Suspensos</p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* Barra de Filtros */}
@@ -349,89 +437,43 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
         </TabsList>
 
         {/* Convênios Estaduais */}
-        <TabsContent value="estaduais" className="space-y-4">
+        <TabsContent value="estaduais" className="space-y-3">
           {conveniosEstaduaisFiltrados.map((convenio) => {
             const diasRestantes = calcularDiasRestantes(convenio.vigenciaFim);
             
             return (
               <Card 
                 key={convenio.id} 
-                className={`${convenio.temIrregularidade ? 'border-red-300' : ''} cursor-pointer hover:shadow-md transition-shadow`}
+                className={`${convenio.temIrregularidade ? 'border-l-4 border-l-red-500' : ''} cursor-pointer hover:shadow-lg transition-all hover:scale-[1.01]`}
                 onDoubleClick={() => onOpenDetalhamento(convenio.id)}
               >
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <CardTitle className="text-lg">{convenio.numeroInstrumento}</CardTitle>
-                        {getStatusBadge(convenio.status)}
-                      </div>
-                      <p className="text-sm text-gray-600">{convenio.objeto}</p>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <Building2 className="w-4 h-4" />
-                          {convenio.instituicao}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
+                <CardContent className="p-5">
                   {convenio.temIrregularidade && (
                     <Alert variant="destructive" className="mb-4">
                       <AlertTriangle className="h-4 w-4" />
                       <AlertTitle>Irregularidade Detectada</AlertTitle>
                       <AlertDescription>
                         Este convênio apresenta pendências que impedem o prosseguimento normal da execução.
-                        Clique em "Abrir Chamado" para reportar o problema.
                       </AlertDescription>
                     </Alert>
                   )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Valor Global</p>
-                      <p className="text-lg font-bold">{formatarMoeda(convenio.valorGlobal)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Execução Financeira</p>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-[#2e6a50] transition-all"
-                            style={{ width: `${convenio.percentualExecucao}%` }}
-                          />
+                  <div className="flex items-center justify-between gap-4">
+                    {/* Nº de Convênio e Status */}
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-base font-bold text-gray-900">{convenio.numeroInstrumento}</span>
+                          {getStatusBadge(convenio.status)}
                         </div>
-                        <span className="text-lg font-bold">{convenio.percentualExecucao}%</span>
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <Building2 className="w-3.5 h-3.5" />
+                          <span>{convenio.instituicao}</span>
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Vigência</p>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm">
-                          {new Date(convenio.vigenciaFim).toLocaleDateString('pt-BR')}
-                        </span>
-                      </div>
-                      <p className={`text-sm ${getDiasRestantesColor(diasRestantes)}`}>
-                        {diasRestantes > 0 ? `${diasRestantes} dias restantes` : 'Vencido'}
-                      </p>
-                    </div>
-                  </div>
 
-                  <div className="mb-4 text-sm text-gray-600">
-                    Medições: {convenio.medicoesRealizadas} de {convenio.totalMedicoes} realizadas
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm">
-                      <FileText className="w-4 h-4 mr-2" />
-                      Plano de Trabalho
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Ver Medições
-                    </Button>
+                    {/* Botão Abrir Detalhamento */}
                     <Button 
                       variant="default" 
                       size="sm"
@@ -439,23 +481,45 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
                         e.stopPropagation();
                         onOpenDetalhamento(convenio.id);
                       }}
-                      className="bg-[#2e6a50] hover:bg-[#1a3e3e]"
+                      className="bg-[#2e6a50] hover:bg-[#1a3e3e] shrink-0"
                     >
                       <ExternalLink className="w-4 h-4 mr-2" />
                       Abrir Detalhamento
                     </Button>
-                    <Button 
-                      variant="default" 
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        abrirChamado(convenio.id, convenio.numeroInstrumento, 'estadual');
-                      }}
-                      className="bg-[#2e6a50] hover:bg-[#1a3e3e]"
-                    >
-                      <MessageSquare className="w-4 h-4 mr-2" />
-                      Abrir Chamado
-                    </Button>
+                  </div>
+
+                  {/* Objeto */}
+                  <p className="text-sm text-gray-700 mt-3 mb-4 line-clamp-2">{convenio.objeto}</p>
+
+                  {/* Informações Principais em Grid */}
+                  <div className="grid grid-cols-3 gap-4">
+                    {/* Valor Global */}
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1.5">Valor Global</p>
+                      <p className="text-lg font-bold text-gray-900">{formatarMoeda(convenio.valorGlobal)}</p>
+                    </div>
+
+                    {/* Vigência */}
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1.5">Vigência</p>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                        <span className="text-sm font-bold text-gray-900">
+                          {new Date(convenio.vigenciaFim).toLocaleDateString('pt-BR')}
+                        </span>
+                      </div>
+                      <p className={`text-xs font-semibold ${getDiasRestantesColor(diasRestantes)}`}>
+                        {diasRestantes > 0 ? `${diasRestantes} dias restantes` : 'Vencido'}
+                      </p>
+                    </div>
+
+                    {/* Execução */}
+                    <div className="flex items-center justify-end">
+                      <div className="text-right">
+                        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1.5">Execução</p>
+                        <p className="text-2xl font-bold text-[#2e6a50]">{convenio.percentualExecucao}%</p>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -476,124 +540,20 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
 
         {/* Convênios Federais */}
         <TabsContent value="federais" className="space-y-4">
-          {conveniosFederaisFiltrados.map((convenio) => {
-            const diasRestantes = calcularDiasRestantes(convenio.vigenciaFim);
-            
-            return (
-              <Card 
-                key={convenio.id} 
-                className={`${convenio.temIrregularidade ? 'border-red-300' : ''} cursor-pointer hover:shadow-md transition-shadow`}
-                onDoubleClick={() => onOpenDetalhamento(convenio.id)}
-              >
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <CardTitle className="text-lg">{convenio.numeroConvenio}</CardTitle>
-                        {getStatusBadge(convenio.status)}
-                      </div>
-                      <p className="text-sm text-gray-600">{convenio.objeto}</p>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                        <div className="flex items-center gap-1">
-                          <Building2 className="w-4 h-4" />
-                          {convenio.ministerio}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  {convenio.clausulasSuspensivas && (
-                    <Alert variant="destructive" className="mb-4">
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertTitle>Cláusula Suspensiva Ativa</AlertTitle>
-                      <AlertDescription>
-                        {convenio.motivoSuspensao || 'Recurso bloqueado por pendência documental.'}
-                      </AlertDescription>
-                    </Alert>
-                  )}
-
-                  {convenio.temIrregularidade && !convenio.clausulasSuspensivas && (
-                    <Alert variant="destructive" className="mb-4">
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertTitle>Irregularidade Detectada</AlertTitle>
-                      <AlertDescription>
-                        Este convênio apresenta pendências. Clique em "Abrir Chamado" para reportar.
-                      </AlertDescription>
-                    </Alert>
-                  )}
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Valor Global</p>
-                      <p className="text-lg font-bold">{formatarMoeda(convenio.valorGlobal)}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Situação do Empenho</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        {getEmpenhoIcon(convenio.situacaoEmpenho)}
-                        <span className="text-sm font-medium">{convenio.situacaoEmpenho}</span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Vigência</p>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm">
-                          {new Date(convenio.vigenciaFim).toLocaleDateString('pt-BR')}
-                        </span>
-                      </div>
-                      <p className={`text-sm ${getDiasRestantesColor(diasRestantes)}`}>
-                        {diasRestantes > 0 ? `${diasRestantes} dias restantes` : 'Vencido'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm">
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Histórico de Repasses
-                    </Button>
-                    <Button 
-                      variant="default" 
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenDetalhamento(convenio.id);
-                      }}
-                      className="bg-[#2e6a50] hover:bg-[#1a3e3e]"
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Abrir Detalhamento
-                    </Button>
-                    <Button 
-                      variant="default" 
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        abrirChamado(convenio.id, convenio.numeroConvenio, 'federal');
-                      }}
-                      className="bg-[#2e6a50] hover:bg-[#1a3e3e]"
-                    >
-                      <MessageSquare className="w-4 h-4 mr-2" />
-                      Abrir Chamado
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-
-          {conveniosFederaisFiltrados.length === 0 && (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center text-gray-500 py-8">
-                  <HandshakeIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>Nenhum convênio federal cadastrado</p>
+          <Card className="border-orange-200 bg-orange-50">
+            <CardContent className="pt-6">
+              <div className="text-center py-12">
+                <div className="w-20 h-20 mx-auto mb-6 bg-orange-100 rounded-full flex items-center justify-center">
+                  <HandshakeIcon className="w-10 h-10 text-orange-600" />
                 </div>
-              </CardContent>
-            </Card>
-          )}
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Convênios Federais</h3>
+                <p className="text-lg text-gray-600 mb-2">Módulo em Desenvolvimento</p>
+                <p className="text-sm text-gray-500 max-w-md mx-auto">
+                  A funcionalidade de gestão de convênios federais está sendo desenvolvida e estará disponível em breve.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
 
