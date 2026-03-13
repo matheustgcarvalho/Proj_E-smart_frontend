@@ -233,8 +233,8 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Convênios Regulares */}
         <Card className="bg-green-50 border-green-200 hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
-            <CardTitle className="text-xs font-medium text-gray-700">Regulares</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-4">
+            <CardTitle className="text-sm font-semibold text-gray-700">Regulares</CardTitle>
             <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center">
               <CheckCircle2 className="h-3.5 w-3.5 text-green-700" />
             </div>
@@ -246,8 +246,8 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
 
         {/* Convênios Irregulares */}
         <Card className="bg-red-50 border-red-200 hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
-            <CardTitle className="text-xs font-medium text-gray-700">Irregulares</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-4">
+            <CardTitle className="text-sm font-semibold text-gray-700">Irregulares</CardTitle>
             <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center">
               <ShieldAlert className="h-3.5 w-3.5 text-red-700" />
             </div>
@@ -259,8 +259,8 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
 
         {/* Convênios Bloqueados */}
         <Card className="bg-gray-50 border-gray-200 hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
-            <CardTitle className="text-xs font-medium text-gray-700">Bloqueados</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-4">
+            <CardTitle className="text-sm font-semibold text-gray-700">Bloqueados</CardTitle>
             <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center">
               <Ban className="h-3.5 w-3.5 text-gray-700" />
             </div>
@@ -272,8 +272,8 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
 
         {/* Vigência a Vencer em até 90 dias */}
         <Card className="bg-orange-50 border-orange-200 hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
-            <CardTitle className="text-xs font-medium text-gray-700">Vigência a Vencer</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-4">
+            <CardTitle className="text-sm font-semibold text-gray-700">Vigência a Vencer</CardTitle>
             <div className="w-7 h-7 rounded-lg bg-orange-100 flex items-center justify-center">
               <Clock className="h-3.5 w-3.5 text-orange-700" />
             </div>
