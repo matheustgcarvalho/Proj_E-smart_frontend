@@ -62,34 +62,29 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
   const conveniosData = CONVENIOS_DATA[city.id] || CONVENIOS_DATA['fortaleza'];
 
   // Calcular KPIs adicionais
-  const conveniosAtivos = useMemo(() => {
-    const estaduaisAtivos = conveniosData.estaduais.filter(c => c.status === 'Em Execução').length;
-    const federaisAtivos = conveniosData.federais.filter(c => c.status === 'Em Execução').length;
-    return estaduaisAtivos + federaisAtivos;
+  const conveniosEstaduaisRegulares = useMemo(() => {
+    return conveniosData.estaduais.filter(c => 
+      c.status !== 'Inadimplente' && 
+      c.status !== 'Suspenso' && 
+      !c.temIrregularidade
+    ).length;
   }, [conveniosData]);
 
-  const conveniosIrregulares = useMemo(() => {
-    const estaduaisIrregulares = conveniosData.estaduais.filter(c => c.status === 'Inadimplente' || c.temIrregularidade).length;
-    const federaisIrregulares = conveniosData.federais.filter(c => c.status === 'Inadimplente' || c.temIrregularidade).length;
-    return estaduaisIrregulares + federaisIrregulares;
+  const conveniosEstaduaisIrregulares = useMemo(() => {
+    return conveniosData.estaduais.filter(c => 
+      c.status === 'Inadimplente' || c.temIrregularidade
+    ).length;
   }, [conveniosData]);
 
-  const conveniosBloqueados = useMemo(() => {
-    const estaduaisBloqueados = conveniosData.estaduais.filter(c => c.status === 'Suspenso').length;
-    const federaisBloqueados = conveniosData.federais.filter(c => c.status === 'Suspenso').length;
-    return estaduaisBloqueados + federaisBloqueados;
+  const conveniosEstaduaisBloqueados = useMemo(() => {
+    return conveniosData.estaduais.filter(c => c.status === 'Suspenso').length;
   }, [conveniosData]);
 
-  const vigenciasVencer90Dias = useMemo(() => {
-    const estaduaisVencendo = conveniosData.estaduais.filter(c => {
+  const vigenciasEstaduaisVencer90Dias = useMemo(() => {
+    return conveniosData.estaduais.filter(c => {
       const dias = calcularDiasRestantes(c.vigenciaFim);
       return dias > 0 && dias <= 90;
     }).length;
-    const federaisVencendo = conveniosData.federais.filter(c => {
-      const dias = calcularDiasRestantes(c.vigenciaFim);
-      return dias > 0 && dias <= 90;
-    }).length;
-    return estaduaisVencendo + federaisVencendo;
   }, [conveniosData]);
 
   // Listas únicas para os filtros
@@ -234,119 +229,60 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
         </div>
       </div>
 
-      {/* Cards KPI */}
-      <div className="space-y-4">
-        {/* Linha 1 - Cards Financeiros (4 cards iguais) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Total de Convênios */}
-          <Card className="border-gray-200 hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-4">
-              <CardTitle className="text-sm font-medium text-gray-700">Total de Convênios</CardTitle>
-              <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
-                <DollarSign className="h-4 w-4 text-gray-700" />
-              </div>
-            </CardHeader>
-            <CardContent className="pb-3">
-              <div className="text-2xl font-bold text-gray-900">{formatarMoeda(conveniosData.kpis.valorTotal)}</div>
-              <p className="text-xs text-gray-500 mt-0.5">
-                {conveniosData.kpis.totalConvenios} convênios cadastrados
-              </p>
-            </CardContent>
-          </Card>
+      {/* Cards KPI - Apenas para Convênios Estaduais */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Convênios Regulares */}
+        <Card className="bg-green-50 border-green-200 hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
+            <CardTitle className="text-xs font-medium text-gray-700">Regulares</CardTitle>
+            <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center">
+              <CheckCircle2 className="h-3.5 w-3.5 text-green-700" />
+            </div>
+          </CardHeader>
+          <CardContent className="pb-3">
+            <div className="text-3xl font-bold text-green-700">{conveniosEstaduaisRegulares}</div>
+          </CardContent>
+        </Card>
 
-          {/* Recursos a Receber */}
-          <Card className="border-gray-200 hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-4">
-              <CardTitle className="text-sm font-medium text-gray-700">Recursos a Receber</CardTitle>
-              <div className="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center">
-                <TrendingUp className="h-4 w-4 text-green-700" />
-              </div>
-            </CardHeader>
-            <CardContent className="pb-3">
-              <div className="text-2xl font-bold text-gray-900">
-                {formatarMoeda(conveniosData.kpis.recursosReceber)}
-              </div>
-              <p className="text-xs text-gray-500 mt-0.5">Aguardando liberação</p>
-            </CardContent>
-          </Card>
+        {/* Convênios Irregulares */}
+        <Card className="bg-red-50 border-red-200 hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
+            <CardTitle className="text-xs font-medium text-gray-700">Irregulares</CardTitle>
+            <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center">
+              <ShieldAlert className="h-3.5 w-3.5 text-red-700" />
+            </div>
+          </CardHeader>
+          <CardContent className="pb-3">
+            <div className="text-3xl font-bold text-red-700">{conveniosEstaduaisIrregulares}</div>
+          </CardContent>
+        </Card>
 
-          {/* Contrapartidas Pendentes */}
-          <Card className="border-gray-200 hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-4">
-              <CardTitle className="text-sm font-medium text-gray-700">Contrapartidas Pendentes</CardTitle>
-              <div className="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center">
-                <AlertTriangle className="h-4 w-4 text-orange-700" />
-              </div>
-            </CardHeader>
-            <CardContent className="pb-3">
-              <div className="text-2xl font-bold text-gray-900">
-                {formatarMoeda(conveniosData.kpis.contrapartidasPendentes)}
-              </div>
-              <p className="text-xs text-gray-500 mt-0.5">Depósito municipal</p>
-            </CardContent>
-          </Card>
+        {/* Convênios Bloqueados */}
+        <Card className="bg-gray-50 border-gray-200 hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
+            <CardTitle className="text-xs font-medium text-gray-700">Bloqueados</CardTitle>
+            <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center">
+              <Ban className="h-3.5 w-3.5 text-gray-700" />
+            </div>
+          </CardHeader>
+          <CardContent className="pb-3">
+            <div className="text-3xl font-bold text-gray-700">{conveniosEstaduaisBloqueados}</div>
+          </CardContent>
+        </Card>
 
-          {/* Vigência a vencer em até 90 dias */}
-          <Card className="border-gray-200 hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pt-4">
-              <CardTitle className="text-sm font-medium text-gray-700">Vigência a Vencer</CardTitle>
-              <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center">
-                <Clock className="h-4 w-4 text-purple-700" />
-              </div>
-            </CardHeader>
-            <CardContent className="pb-3">
-              <div className="text-2xl font-bold text-gray-900">
-                {vigenciasVencer90Dias}
-              </div>
-              <p className="text-xs text-gray-500 mt-0.5">Próximos 90 dias</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Linha 2 - Cards de Status (3 cards iguais) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Convênios Ativos */}
-          <Card className="bg-green-50 border-green-200 hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
-              <CardTitle className="text-xs font-medium text-gray-700">Convênios Ativos</CardTitle>
-              <div className="w-7 h-7 rounded-lg bg-green-100 flex items-center justify-center">
-                <PlayCircle className="h-3.5 w-3.5 text-green-700" />
-              </div>
-            </CardHeader>
-            <CardContent className="pb-2">
-              <div className="text-xl font-bold text-green-700">{conveniosAtivos}</div>
-              <p className="text-[10px] text-gray-500 mt-0">Em execução</p>
-            </CardContent>
-          </Card>
-
-          {/* Convênios Irregulares */}
-          <Card className="bg-red-50 border-red-200 hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
-              <CardTitle className="text-xs font-medium text-gray-700">Convênios Irregulares</CardTitle>
-              <div className="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center">
-                <ShieldAlert className="h-3.5 w-3.5 text-red-700" />
-              </div>
-            </CardHeader>
-            <CardContent className="pb-2">
-              <div className="text-xl font-bold text-red-700">{conveniosIrregulares}</div>
-              <p className="text-[10px] text-gray-500 mt-0">Com pendências</p>
-            </CardContent>
-          </Card>
-
-          {/* Convênios Bloqueados */}
-          <Card className="bg-gray-50 border-gray-200 hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
-              <CardTitle className="text-xs font-medium text-gray-700">Convênios Bloqueados</CardTitle>
-              <div className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center">
-                <Ban className="h-3.5 w-3.5 text-gray-700" />
-              </div>
-            </CardHeader>
-            <CardContent className="pb-2">
-              <div className="text-xl font-bold text-gray-700">{conveniosBloqueados}</div>
-              <p className="text-[10px] text-gray-500 mt-0">Suspensos</p>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Vigência a Vencer em até 90 dias */}
+        <Card className="bg-orange-50 border-orange-200 hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 pt-3">
+            <CardTitle className="text-xs font-medium text-gray-700">Vigência a Vencer</CardTitle>
+            <div className="w-7 h-7 rounded-lg bg-orange-100 flex items-center justify-center">
+              <Clock className="h-3.5 w-3.5 text-orange-700" />
+            </div>
+          </CardHeader>
+          <CardContent className="pb-3">
+            <div className="text-3xl font-bold text-orange-700">{vigenciasEstaduaisVencer90Dias}</div>
+            <p className="text-[10px] text-gray-500 mt-0">Próximos 90 dias</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Barra de Filtros */}
