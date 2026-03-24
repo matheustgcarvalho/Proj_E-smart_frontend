@@ -333,10 +333,10 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                     </span>
                   </div>
                   <div className={`px-2 py-1 rounded text-center text-xs font-medium ${diasRestantes < 0
-                      ? 'bg-red-100 text-red-800'
-                      : diasRestantes < 60
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-green-100 text-green-800'
+                    ? 'bg-red-100 text-red-800'
+                    : diasRestantes < 60
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-green-100 text-green-800'
                     }`}>
                     {diasRestantes > 0 ? `${diasRestantes} dias restantes` : 'Convênio Vencido'}
                   </div>
@@ -351,10 +351,10 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                 </div>
                 <div className="space-y-2">
                   <div className={`px-3 py-2 rounded-lg text-center ${alertaContrapartida.tipo === 'vencido'
-                      ? 'bg-red-100 border border-red-300'
-                      : alertaContrapartida.tipo === 'a-vencer'
-                        ? 'bg-yellow-100 border border-yellow-300'
-                        : 'bg-green-100 border border-green-300'
+                    ? 'bg-red-100 border border-red-300'
+                    : alertaContrapartida.tipo === 'a-vencer'
+                      ? 'bg-yellow-100 border border-yellow-300'
+                      : 'bg-green-100 border border-green-300'
                     }`}>
                     {alertaContrapartida.tipo === 'vencido' ? (
                       <AlertTriangle className="w-5 h-5 text-red-700 mx-auto mb-1" />
@@ -364,10 +364,10 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                       <CheckCircle2 className="w-5 h-5 text-green-700 mx-auto mb-1" />
                     )}
                     <p className={`text-xs font-semibold ${alertaContrapartida.tipo === 'vencido'
-                        ? 'text-red-800'
-                        : alertaContrapartida.tipo === 'a-vencer'
-                          ? 'text-yellow-800'
-                          : 'text-green-800'
+                      ? 'text-red-800'
+                      : alertaContrapartida.tipo === 'a-vencer'
+                        ? 'text-yellow-800'
+                        : 'text-green-800'
                       }`}>
                       {alertaContrapartida.label}
                     </p>
@@ -464,7 +464,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Concedente (Estado) */}
                   <div className="space-y-4">
-                    <h3 className="font-bold text-gray-700 border-b pb-2">Concedente (Estado)</h3>
+                    <h3 className="font-bold text-gray-700 border-b pb-2">Concedente</h3>
                     <div className="space-y-3">
                       <div>
                         <label className="text-sm font-medium text-gray-500">Órgão Concedente</label>
@@ -485,7 +485,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
 
                   {/* Conveniado (Município) */}
                   <div className="space-y-4">
-                    <h3 className="font-bold text-gray-700 border-b pb-2">Conveniado (Município)</h3>
+                    <h3 className="font-bold text-gray-700 border-b pb-2">Convenente</h3>
                     <div className="space-y-3">
                       <div>
                         <label className="text-sm font-medium text-gray-500">Nome</label>
@@ -514,243 +514,242 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
             </Card>
 
             {/* 🆔 Identificação do Convênio */}
-<Card>
-  <CardHeader className="bg-gradient-to-r from-[#e8f3ef] to-white">
-    <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
-      <FileText className="w-5 h-5 text-[#2e6a50]" />
-      Identificação do Convênio
-    </CardTitle>
-  </CardHeader>
-  <CardContent className="pt-6 space-y-4">
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <div>
-        <label className="text-sm font-medium text-gray-500 block">
-          Número do {isEstadual ? 'Convênio' : 'Convênio'}
-        </label>
-        <p className="text-base font-bold text-[#2e6a50]">{numeroConvenio}</p>
-      </div>
-      {isEstadual && (
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Nº do MAPP</label>
-          <p className="text-base font-semibold text-gray-900">MAPP-2024-{convenio.id.slice(4, 8).toUpperCase()}</p>
-        </div>
-      )}
-      {isEstadual && (convenio as any).numeroSACC && (
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Número SACC</label>
-          <p className="text-base font-semibold text-gray-900">{(convenio as any).numeroSACC}</p>
-        </div>
-      )}
-      {isEstadual && (convenio as any).codigoPlanoTrabalho && (
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Código Plano de Trabalho</label>
-          <p className="text-base font-semibold text-gray-900">{(convenio as any).codigoPlanoTrabalho}</p>
-        </div>
-      )}
-    </div>
+            <Card>
+              <CardHeader className="bg-gradient-to-r from-[#e8f3ef] to-white">
+                <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
+                  <FileText className="w-5 h-5 text-[#2e6a50]" />
+                  Identificação do Convênio
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div>
+                    <label className="text-sm font-medium text-gray-500 block">
+                      Número do {isEstadual ? 'Convênio' : 'Convênio'}
+                    </label>
+                    <p className="text-base font-bold text-[#2e6a50]">{numeroConvenio}</p>
+                  </div>
+                  {isEstadual && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Nº do MAPP</label>
+                      <p className="text-base font-semibold text-gray-900">MAPP-2024-{convenio.id.slice(4, 8).toUpperCase()}</p>
+                    </div>
+                  )}
+                  {isEstadual && (convenio as any).numeroSACC && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Número SACC</label>
+                      <p className="text-base font-semibold text-gray-900">{(convenio as any).numeroSACC}</p>
+                    </div>
+                  )}
+                  {isEstadual && (convenio as any).codigoPlanoTrabalho && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Código Plano de Trabalho</label>
+                      <p className="text-base font-semibold text-gray-900">{(convenio as any).codigoPlanoTrabalho}</p>
+                    </div>
+                  )}
+                </div>
 
-    {/* Documentos do Convênio */}
-    <div className="pt-6 border-t">
-      <h3 className="text-sm font-bold text-gray-700 mb-4">Documentos do Convênio</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <Button
-          variant="outline"
-          className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
-          onClick={() => window.open('#', '_blank')}
-        >
-          <Eye className="w-4 h-4 mr-2" />
-          Visualizar Íntegra do Convênio
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
-          onClick={() => {/* Download logic */ }}
-        >
-          <Download className="w-4 h-4 mr-2" />
-          Baixar Íntegra do Convênio
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
-          onClick={() => window.open('#', '_blank')}
-        >
-          <Eye className="w-4 h-4 mr-2" />
-          Visualizar Plano de Trabalho
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
-          onClick={() => {/* Download logic */ }}
-        >
-          <Download className="w-4 h-4 mr-2" />
-          Baixar Plano de Trabalho
-        </Button>
-      </div>
-    </div>
+                {/* Documentos do Convênio */}
+                <div className="pt-6 border-t">
+                  <h3 className="text-sm font-bold text-gray-700 mb-4">Documentos do Convênio</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
+                      onClick={() => window.open('#', '_blank')}
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Visualizar Íntegra do Convênio
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
+                      onClick={() => {/* Download logic */ }}
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Baixar Íntegra do Convênio
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
+                      onClick={() => window.open('#', '_blank')}
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Visualizar Plano de Trabalho
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
+                      onClick={() => {/* Download logic */ }}
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Baixar Plano de Trabalho
+                    </Button>
+                  </div>
+                </div>
 
-    {/* Situações e Status - Ajustado para Alinhamento Vertical */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t">
-      {isEstadual && (convenio as any).tipoObjeto && (
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Tipo de Objeto</label>
-          <p className="text-base text-gray-900">{(convenio as any).tipoObjeto}</p>
-        </div>
-      )}
-      
-      {isEstadual && (convenio as any).situacaoPrestacaoContas && (
-        <div className="flex flex-col items-start gap-1">
-          <label className="text-sm font-medium text-gray-500">Situação da Prestação de Contas</label>
-          <Badge className={
-            (convenio as any).situacaoPrestacaoContas === 'Em Dia'
-              ? 'bg-green-100 text-green-800 border-green-300 shadow-none'
-              : 'bg-yellow-100 text-yellow-800 border-yellow-300 shadow-none'
-          }>
-            {(convenio as any).situacaoPrestacaoContas}
-          </Badge>
-        </div>
-      )}
+                {/* Situações e Status - Ajustado para Alinhamento Vertical */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t">
+                  {isEstadual && (convenio as any).tipoObjeto && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Tipo de Objeto</label>
+                      <p className="text-base text-gray-900">{(convenio as any).tipoObjeto}</p>
+                    </div>
+                  )}
 
-      {isEstadual && (convenio as any).situacaoFisica && (
-        <div className="flex flex-col items-start gap-1">
-          <label className="text-sm font-medium text-gray-500">Situação Física</label>
-          <Badge className="bg-blue-100 text-blue-800 border-blue-300 shadow-none">
-            {(convenio as any).situacaoFisica}
-          </Badge>
-        </div>
-      )}
-    </div>
+                  {isEstadual && (convenio as any).situacaoPrestacaoContas && (
+                    <div className="flex flex-col items-start gap-1">
+                      <label className="text-sm font-medium text-gray-500">Situação da Prestação de Contas</label>
+                      <Badge className={
+                        (convenio as any).situacaoPrestacaoContas === 'Em Dia'
+                          ? 'bg-green-100 text-green-800 border-green-300 shadow-none'
+                          : 'bg-yellow-100 text-yellow-800 border-yellow-300 shadow-none'
+                      }>
+                        {(convenio as any).situacaoPrestacaoContas}
+                      </Badge>
+                    </div>
+                  )}
 
-    <div className="pt-4 border-t">
-      <label className="text-sm font-medium text-gray-500 block">Objeto do Convênio</label>
-      <p className="text-base text-gray-900 leading-relaxed">{convenio.objeto}</p>
-    </div>
+                  {isEstadual && (convenio as any).situacaoFisica && (
+                    <div className="flex flex-col items-start gap-1">
+                      <label className="text-sm font-medium text-gray-500">Situação Física</label>
+                      <Badge className="bg-blue-100 text-blue-800 border-blue-300 shadow-none">
+                        {(convenio as any).situacaoFisica}
+                      </Badge>
+                    </div>
+                  )}
+                </div>
 
-    {isEstadual && (convenio as any).justificativa && (
-      <div className="pt-4 border-t">
-        <label className="text-sm font-medium text-gray-500 block">Justificativa</label>
-        <p className="text-base text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-lg">
-          {(convenio as any).justificativa}
-        </p>
-      </div>
-    )}
+                <div className="pt-4 border-t">
+                  <label className="text-sm font-medium text-gray-500 block">Objeto do Convênio</label>
+                  <p className="text-base text-gray-900 leading-relaxed">{convenio.objeto}</p>
+                </div>
 
-    {/* Dados Bancários do Convênio */}
-    <div className="pt-4 border-t">
-      <h3 className="text-sm font-bold text-gray-700 mb-4">Dados Bancários do Convênio</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Banco</label>
-          <p className="text-base font-semibold text-gray-900">{pcfData.banco}</p>
-        </div>
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Agência</label>
-          <p className="text-base font-semibold text-gray-900">{pcfData.agencia}</p>
-        </div>
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Conta</label>
-          <p className="text-base font-semibold text-gray-900">{pcfData.conta}</p>
-        </div>
-      </div>
-    </div>
-  </CardContent>
-</Card>
+                {isEstadual && (convenio as any).justificativa && (
+                  <div className="pt-4 border-t">
+                    <label className="text-sm font-medium text-gray-500 block">Justificativa</label>
+                    <p className="text-base text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-lg">
+                      {(convenio as any).justificativa}
+                    </p>
+                  </div>
+                )}
+
+                {/* Dados Bancários do Convênio */}
+                <div className="pt-4 border-t">
+                  <h3 className="text-sm font-bold text-gray-700 mb-4">Dados Bancários do Convênio</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Banco</label>
+                      <p className="text-base font-semibold text-gray-900">{pcfData.banco}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Agência</label>
+                      <p className="text-base font-semibold text-gray-900">{pcfData.agencia}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Conta</label>
+                      <p className="text-base font-semibold text-gray-900">{pcfData.conta}</p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* 📅 Datas e Prazos */}
-<Card>
-  <CardHeader className="bg-gradient-to-r from-[#e8f3ef] to-white">
-    <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
-      <Calendar className="w-5 h-5 text-[#2e6a50]" />
-      Datas e Prazos
-    </CardTitle>
-  </CardHeader>
-  <CardContent className="pt-6">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {isEstadual && (convenio as any).dataAssinatura && (
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Data de Assinatura</label>
-          <p className="text-base font-semibold text-gray-900">
-            {new Date((convenio as any).dataAssinatura).toLocaleDateString('pt-BR')}
-          </p>
-        </div>
-      )}
-      <div>
-        <label className="text-sm font-medium text-gray-500 block">Vigência Início</label>
-        <p className="text-base font-semibold text-gray-900">
-          {new Date(convenio.vigenciaInicio).toLocaleDateString('pt-BR')}
-        </p>
-      </div>
-      <div>
-        <label className="text-sm font-medium text-gray-500 block">Vigência Fim</label>
-        <p className="text-base font-semibold text-gray-900">
-          {new Date(convenio.vigenciaFim).toLocaleDateString('pt-BR')}
-        </p>
-      </div>
-    </div>
+            <Card>
+              <CardHeader className="bg-gradient-to-r from-[#e8f3ef] to-white">
+                <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
+                  <Calendar className="w-5 h-5 text-[#2e6a50]" />
+                  Datas e Prazos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {isEstadual && (convenio as any).dataAssinatura && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Data de Assinatura</label>
+                      <p className="text-base font-semibold text-gray-900">
+                        {new Date((convenio as any).dataAssinatura).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                  )}
+                  <div>
+                    <label className="text-sm font-medium text-gray-500 block">Vigência Início</label>
+                    <p className="text-base font-semibold text-gray-900">
+                      {new Date(convenio.vigenciaInicio).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500 block">Vigência Fim</label>
+                    <p className="text-base font-semibold text-gray-900">
+                      {new Date(convenio.vigenciaFim).toLocaleDateString('pt-BR')}
+                    </p>
+                  </div>
+                </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-      {isEstadual && (convenio as any).terminoOriginal && (
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Término Original</label>
-          <p className="text-base text-gray-900">
-            {new Date((convenio as any).terminoOriginal).toLocaleDateString('pt-BR')}
-          </p>
-        </div>
-      )}
-      {isEstadual && (convenio as any).terminoAposAditivo && (
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Término Após Aditivo</label>
-          <p className="text-base font-semibold text-blue-600">
-            {new Date((convenio as any).terminoAposAditivo).toLocaleDateString('pt-BR')}
-          </p>
-        </div>
-      )}
-      {isEstadual && (convenio as any).dataRescisao && (
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Data de Rescisão</label>
-          <p className="text-base font-semibold text-red-600">
-            {new Date((convenio as any).dataRescisao).toLocaleDateString('pt-BR')}
-          </p>
-        </div>
-      )}
-    </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+                  {isEstadual && (convenio as any).terminoOriginal && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Término Original</label>
+                      <p className="text-base text-gray-900">
+                        {new Date((convenio as any).terminoOriginal).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                  )}
+                  {isEstadual && (convenio as any).terminoAposAditivo && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Término Após Aditivo</label>
+                      <p className="text-base font-semibold text-blue-600">
+                        {new Date((convenio as any).terminoAposAditivo).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                  )}
+                  {isEstadual && (convenio as any).dataRescisao && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Data de Rescisão</label>
+                      <p className="text-base font-semibold text-red-600">
+                        {new Date((convenio as any).dataRescisao).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                  )}
+                </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-      {isEstadual && (convenio as any).publicacaoPortal && (
-        <div>
-          <label className="text-sm font-medium text-gray-500 block">Publicação no Portal</label>
-          <p className="text-base text-gray-900">
-            {new Date((convenio as any).publicacaoPortal).toLocaleDateString('pt-BR')}
-          </p>
-        </div>
-      )}
-      
-      {/* Alinhamento do Status "Vence em" */}
-      <div className="flex flex-col items-start gap-1">
-        <label className="text-sm font-medium text-gray-500">Status</label>
-        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm ${
-          diasRestantes < 0
-            ? 'bg-red-100 text-red-800'
-            : diasRestantes < 60
-              ? 'bg-yellow-100 text-yellow-800'
-              : 'bg-green-100 text-green-800'
-        }`}>
-          <Clock className="w-4 h-4" />
-          {diasRestantes > 0 ? `${diasRestantes} dias` : 'Vencido'}
-        </div>
-      </div>
-    </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+                  {isEstadual && (convenio as any).publicacaoPortal && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 block">Publicação no Portal</label>
+                      <p className="text-base text-gray-900">
+                        {new Date((convenio as any).publicacaoPortal).toLocaleDateString('pt-BR')}
+                      </p>
+                    </div>
+                  )}
 
-    <div className="pt-6 border-t mt-6 flex justify-end">
-      <Button
-        className="bg-[#2e6a50] hover:bg-[#1a3e3e]"
-        onClick={() => setModalTermosAberto(true)}
-      >
-        <FileSignature className="w-4 h-4 mr-2" />
-        Detalhamento da Vigência e Termos Aditivos
-      </Button>
-    </div>
-  </CardContent>
-</Card>
+                  {/* Alinhamento do Status "Vence em" */}
+                  <div className="flex flex-col items-start gap-1">
+                    <label className="text-sm font-medium text-gray-500">Status</label>
+                    <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm ${diasRestantes < 0
+                      ? 'bg-red-100 text-red-800'
+                      : diasRestantes < 60
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-green-100 text-green-800'
+                      }`}>
+                      <Clock className="w-4 h-4" />
+                      {diasRestantes > 0 ? `${diasRestantes} dias` : 'Vencido'}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t mt-6 flex justify-end">
+                  <Button
+                    className="bg-[#2e6a50] hover:bg-[#1a3e3e]"
+                    onClick={() => setModalTermosAberto(true)}
+                  >
+                    <FileSignature className="w-4 h-4 mr-2" />
+                    Detalhamento da Vigência e Termos Aditivos
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* 💰 Valores Financeiros */}
             <Card>
@@ -776,8 +775,8 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
 
                   {/* CARD 2: Valor Atualizado Total (Lógica para manter o card mesmo se não houver dado) */}
                   <div className={`p-4 rounded-lg border-2 flex flex-col justify-between ${isEstadual && (convenio as any).valorAtualizadoTotal
-                      ? "bg-blue-50 border-blue-200"
-                      : "bg-gray-50 border-gray-100 opacity-60"
+                    ? "bg-blue-50 border-blue-200"
+                    : "bg-gray-50 border-gray-100 opacity-60"
                     }`}>
                     <label className={`text-sm font-medium ${isEstadual ? "text-blue-700" : "text-gray-500"}`}>
                       Valor Atualizado Total
@@ -1484,122 +1483,132 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                     </p>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="bg-gradient-to-r from-[#e8f3ef] to-white">
-                        <tr>
-                          <th className="text-left p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Data</th>
-                          <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Repasse Feito</th>
-                          <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Contrapartida Aportada</th>
-                          <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">OBT - Pagamentos</th>
-                          <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Saldo em Conta</th>
-                          <th className="text-center p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Arquivo</th>
-                          <th className="text-center p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {registrosExecucao.map((registro, index) => (
-                          <tr key={registro.id} className={`border-b hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                            }`}>
-                            <td className="p-3">
-                              <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4 text-gray-400" />
-                                <span className="font-semibold text-gray-900 text-sm">
-                                  {new Date(registro.data).toLocaleDateString('pt-BR')}
-                                </span>
-                              </div>
-                              {registro.observacao && (
-                                <p className="text-xs text-gray-500 mt-1 italic">{registro.observacao}</p>
-                              )}
-                            </td>
-                            <td className="p-3 text-right">
-                              <span className="font-bold text-blue-700 text-sm">
-                                {formatarMoeda(registro.repasseFeito)}
-                              </span>
-                            </td>
-                            <td className="p-3 text-right">
-                              <span className="font-bold text-purple-700 text-sm">
-                                {formatarMoeda(registro.contrapartidaAportada)}
-                              </span>
-                            </td>
-                            <td className="p-3 text-right">
-                              <span className="font-bold text-orange-700 text-sm">
-                                {formatarMoeda(registro.obtPagamentosRealizados)}
-                              </span>
-                            </td>
-                            <td className="p-3 text-right">
-                              <span className="font-bold text-green-700 text-sm">
-                                {formatarMoeda(registro.saldoEmConta)}
-                              </span>
-                            </td>
-                            <td className="p-3 text-center">
-                              {registro.arquivo ? (
-                                <Button size="sm" variant="ghost" className="text-xs">
-                                  <Download className="w-3 h-3 mr-1" />
-                                  Baixar
-                                </Button>
-                              ) : (
-                                <span className="text-xs text-gray-400">-</span>
-                              )}
-                            </td>
-                            <td className="p-3">
-                              <div className="flex gap-1 justify-center">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => {
-                                    setExecucaoEditando(registro);
-                                    setModalExecucaoAberto(true);
-                                  }}
-                                  className="h-7 px-2"
-                                >
-                                  <Edit className="w-3 h-3" />
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => {
-                                    setRegistrosExecucao(registrosExecucao.filter(r => r.id !== registro.id));
-                                  }}
-                                  className="h-7 px-2"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </Button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-
-                    <div className="mt-6 bg-gradient-to-r from-[#e8f3ef] to-white p-4 rounded-lg border-2 border-[#2e6a50]">
-                      <h3 className="text-sm font-bold text-[#1a3e3e] mb-3">Totalizadores</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="text-center">
-                          <label className="text-xs font-medium text-blue-700">Total Repasses</label>
+                  <div className="space-y-6">
+                    {/* Totalizadores com o novo indicador Rendimento */}
+                    <div className="bg-gradient-to-r from-[#e8f3ef] to-white p-4 rounded-lg border-2 border-[#2e6a50]">
+                      <h3 className="text-sm font-bold text-[#1a3e3e] mb-3 uppercase tracking-wider">Resumo Consolidado</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div className="text-center border-r border-gray-200 last:border-0">
+                          <label className="text-xs font-medium text-blue-700 block mb-1">Total Repasses</label>
                           <p className="text-lg font-bold text-blue-900">
                             {formatarMoeda(registrosExecucao.reduce((sum, r) => sum + r.repasseFeito, 0))}
                           </p>
                         </div>
-                        <div className="text-center">
-                          <label className="text-xs font-medium text-purple-700">Total Contrapartida</label>
+                        <div className="text-center border-r border-gray-200 last:border-0">
+                          <label className="text-xs font-medium text-purple-700 block mb-1">Total Contrapartida</label>
                           <p className="text-lg font-bold text-purple-900">
                             {formatarMoeda(registrosExecucao.reduce((sum, r) => sum + r.contrapartidaAportada, 0))}
                           </p>
                         </div>
-                        <div className="text-center">
-                          <label className="text-xs font-medium text-orange-700">Total Pagamentos</label>
+                        <div className="text-center border-r border-gray-200 last:border-0">
+                          <label className="text-xs font-medium text-orange-700 block mb-1">Total Pagamentos</label>
                           <p className="text-lg font-bold text-orange-900">
                             {formatarMoeda(registrosExecucao.reduce((sum, r) => sum + r.obtPagamentosRealizados, 0))}
                           </p>
                         </div>
+                        {/* Novo Indicador: Rendimento */}
+                        <div className="text-center border-r border-gray-200 last:border-0">
+                          <label className="text-xs font-medium text-emerald-700 block mb-1">Rendimento</label>
+                          <p className="text-lg font-bold text-emerald-900">
+                            {formatarMoeda(registrosExecucao.reduce((sum, r) => sum + (r.rendimentoAplicacoes || 0), 0))}
+                          </p>
+                        </div>
                         <div className="text-center">
-                          <label className="text-xs font-medium text-green-700">Saldo Atual</label>
+                          <label className="text-xs font-medium text-green-700 block mb-1">Saldo Atual</label>
                           <p className="text-lg font-bold text-green-900">
                             {formatarMoeda(registrosExecucao[registrosExecucao.length - 1]?.saldoEmConta || 0)}
                           </p>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Tabela de Registros */}
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="text-left p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Data</th>
+                            <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Repasse Feito</th>
+                            <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Contrapartida Aportada</th>
+                            <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">OBT - Pagamentos</th>
+                            <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Saldo em Conta</th>
+                            <th className="text-center p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Arquivo</th>
+                            <th className="text-center p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {registrosExecucao.map((registro, index) => (
+                            <tr key={registro.id} className={`border-b hover:bg-gray-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                              <td className="p-3">
+                                <div className="flex items-center gap-2">
+                                  <Calendar className="w-4 h-4 text-gray-400" />
+                                  <span className="font-semibold text-gray-900 text-sm">
+                                    {new Date(registro.data).toLocaleDateString('pt-BR')}
+                                  </span>
+                                </div>
+                                {registro.observacao && (
+                                  <p className="text-xs text-gray-500 mt-1 italic">{registro.observacao}</p>
+                                )}
+                              </td>
+                              <td className="p-3 text-right">
+                                <span className="font-bold text-blue-700 text-sm">
+                                  {formatarMoeda(registro.repasseFeito)}
+                                </span>
+                              </td>
+                              <td className="p-3 text-right">
+                                <span className="font-bold text-purple-700 text-sm">
+                                  {formatarMoeda(registro.contrapartidaAportada)}
+                                </span>
+                              </td>
+                              <td className="p-3 text-right">
+                                <span className="font-bold text-orange-700 text-sm">
+                                  {formatarMoeda(registro.obtPagamentosRealizados)}
+                                </span>
+                              </td>
+                              <td className="p-3 text-right">
+                                <span className="font-bold text-green-700 text-sm">
+                                  {formatarMoeda(registro.saldoEmConta)}
+                                </span>
+                              </td>
+                              <td className="p-3 text-center">
+                                {registro.arquivo ? (
+                                  <Button size="sm" variant="ghost" className="text-xs">
+                                    <Download className="w-3 h-3 mr-1" />
+                                    Baixar
+                                  </Button>
+                                ) : (
+                                  <span className="text-xs text-gray-400">-</span>
+                                )}
+                              </td>
+                              <td className="p-3">
+                                <div className="flex gap-1 justify-center">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                      setExecucaoEditando(registro);
+                                      setModalExecucaoAberto(true);
+                                    }}
+                                    className="h-7 px-2"
+                                  >
+                                    <Edit className="w-3 h-3" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => {
+                                      setRegistrosExecucao(registrosExecucao.filter(r => r.id !== registro.id));
+                                    }}
+                                    className="h-7 px-2"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 )}
@@ -1712,29 +1721,24 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                 ) : (
                   <div className="space-y-4">
                     {ocorrencias.map((ocorrencia) => (
-                      <Card key={ocorrencia.id} className={`border-l-4 ${ocorrencia.status === 'Pendente' ? 'border-l-orange-500' : 'border-l-green-500'
-                        }`}>
+                      <Card key={ocorrencia.id} className={`border-l-4 ${ocorrencia.status === 'Pendente' ? 'border-l-orange-500' : 'border-l-green-500'}`}>
                         <CardContent className="p-5">
                           <div className="flex items-start justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4 text-gray-400" />
-                              <span className="font-bold text-gray-900">
-                                {new Date(ocorrencia.data).toLocaleDateString('pt-BR')}
-                              </span>
-                              <Badge className={
-                                ocorrencia.status === 'Pendente'
-                                  ? 'bg-orange-100 text-orange-800'
-                                  : 'bg-green-100 text-green-800'
-                              }>
+                            <div className="flex flex-col items-start gap-2">
+                              <div className="flex items-center gap-2">
+                                <Calendar className="w-4 h-4 text-gray-400" />
+                                <span className="font-bold text-gray-900">
+                                  {new Date(ocorrencia.data).toLocaleDateString('pt-BR')}
+                                </span>
+                              </div>
+                              <Badge className={ocorrencia.status === 'Pendente' ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}>
                                 {ocorrencia.status}
                               </Badge>
                             </div>
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => {
-                                setOcorrencias(ocorrencias.filter(o => o.id !== ocorrencia.id));
-                              }}
+                              onClick={() => setOcorrencias(ocorrencias.filter(o => o.id !== ocorrencia.id))}
                             >
                               <Trash2 className="w-3 h-3 mr-1" />
                               Excluir
@@ -1752,32 +1756,14 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                               <p className="text-sm font-bold text-gray-900">
                                 {new Date(ocorrencia.prazoResposta).toLocaleDateString('pt-BR')}
                               </p>
-                              {ocorrencia.status === 'Pendente' && (
-                                <p className="text-xs text-orange-600 mt-1">
-                                  {Math.ceil((new Date(ocorrencia.prazoResposta).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} dias restantes
-                                </p>
-                              )}
                             </div>
-                            {ocorrencia.dataResposta && (
+                            {ocorrencia.destinatario && (
                               <div>
-                                <label className="text-xs font-medium text-gray-500">Data da Resposta</label>
-                                <p className="text-sm font-bold text-green-900">
-                                  {new Date(ocorrencia.dataResposta).toLocaleDateString('pt-BR')}
-                                </p>
+                                <label className="text-xs font-medium text-gray-500">Destinatário</label>
+                                <p className="text-sm text-gray-900 font-medium">{ocorrencia.destinatario}</p>
                               </div>
                             )}
                           </div>
-
-                          {ocorrencia.documentoSolicitado && (
-                            <div className="flex items-center gap-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
-                              <FileText className="w-4 h-4" />
-                              <span>{ocorrencia.documentoSolicitado}</span>
-                              <Button size="sm" variant="ghost" className="ml-auto">
-                                <Download className="w-3 h-3 mr-1" />
-                                Baixar
-                              </Button>
-                            </div>
-                          )}
                         </CardContent>
                       </Card>
                     ))}
@@ -1792,30 +1778,20 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                 <DialogHeader>
                   <DialogTitle>Registrar Nova Ocorrência</DialogTitle>
                   <DialogDescription>
-                    A ocorrência será vinculada automaticamente a este convênio
+                    A ocorrência será vinculada automaticamente a este convênio e notificada ao destinatário.
                   </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                  {/* Dados do Convênio (Pré-preenchidos) */}
+                  {/* Dados do Convênio */}
                   <div className="bg-gradient-to-r from-[#e8f3ef] to-white p-4 rounded-lg border border-[#2e6a50]">
                     <h3 className="text-sm font-bold text-[#1a3e3e] mb-3">Dados do Convênio</h3>
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-xs font-medium text-gray-500">SACC</label>
-                        <p className="text-sm font-bold text-gray-900">
-                          {isEstadual ? (convenio as any).numeroSacc || 'N/A' : 'N/A'}
-                        </p>
-                      </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500">Nº do Convênio</label>
                         <p className="text-sm font-bold text-gray-900">
                           {isEstadual ? (convenio as any).numeroInstrumento : (convenio as any).numeroConvenio}
                         </p>
-                      </div>
-                      <div className="col-span-2">
-                        <label className="text-xs font-medium text-gray-500">Objeto</label>
-                        <p className="text-sm text-gray-900">{convenio.objeto}</p>
                       </div>
                       <div>
                         <label className="text-xs font-medium text-gray-500">Secretaria</label>
@@ -1823,6 +1799,25 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                           {isEstadual ? (convenio as any).instituicao : (convenio as any).ministerio}
                         </p>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Campo Destinatário */}
+                  <div className="space-y-2">
+                    <Label>Destinatário da Notificação *</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecionar usuário do sistema" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="financeiro">Setor Financeiro</SelectItem>
+                          <SelectItem value="contabilidade">Contabilidade</SelectItem>
+                          <SelectItem value="juridico">Assessor Jurídico</SelectItem>
+                          <SelectItem value="secretario">Secretário(a)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Input type="email" placeholder="Ou digite um e-mail externo" />
                     </div>
                   </div>
 
@@ -1842,7 +1837,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                     </div>
                     <div className="space-y-2">
                       <Label>Documento Solicitado (Anexo)</Label>
-                      <Input type="file" />
+                      <Input type="file" className="cursor-pointer" />
                     </div>
                   </div>
                 </div>
@@ -1853,10 +1848,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                   </Button>
                   <Button
                     className="bg-[#2e6a50] hover:bg-[#1a3e3e]"
-                    onClick={() => {
-                      // Lógica de salvamento
-                      setModalOcorrenciaAberto(false);
-                    }}
+                    onClick={() => setModalOcorrenciaAberto(false)}
                   >
                     <Save className="w-4 h-4 mr-2" />
                     Registrar Ocorrência
