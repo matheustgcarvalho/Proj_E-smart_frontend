@@ -1,4 +1,4 @@
-// Dados mockados para o módulo de Usuários
+// Dados mockados para o módulo de Usuários atualizados
 
 export interface Usuario {
   id: string;
@@ -8,8 +8,10 @@ export interface Usuario {
   rg: string;
   telefone: string;
   cargo: string;
-  tipoPerfil: 'zaneli-admin' | 'zaneli-gestor' | 'zaneli-colaborador' | 'prefeitura-gestor' | 'prefeitura-colaborador';
-  municipiosVinculados: string[]; // IDs dos municípios
+  tipoPerfil: 'aprovador' | 'comum';
+  tipoVinculo: 'escritorio' | 'municipio'; 
+  escritoriosVinculados?: string[]; 
+  municipiosVinculados?: string[]; 
   status: 'ativo' | 'inativo';
   dataCadastro: string;
   ultimoAcesso?: string;
@@ -24,8 +26,9 @@ export const USUARIOS_MOCK: Usuario[] = [
     rg: '1234567',
     telefone: '(85) 98765-4321',
     cargo: 'Coordenador de TI',
-    tipoPerfil: 'zaneli-admin',
-    municipiosVinculados: ['1', '2', '3', '4', '5'], // Todos
+    tipoPerfil: 'aprovador',
+    tipoVinculo: 'escritorio',
+    escritoriosVinculados: ['escrit-1'],
     status: 'ativo',
     dataCadastro: '2024-01-10',
     ultimoAcesso: '2024-03-15 14:30'
@@ -38,8 +41,9 @@ export const USUARIOS_MOCK: Usuario[] = [
     rg: '2345678',
     telefone: '(85) 99876-5432',
     cargo: 'Analista de Sistemas',
-    tipoPerfil: 'zaneli-gestor',
-    municipiosVinculados: ['1', '2', '5'],
+    tipoPerfil: 'aprovador',
+    tipoVinculo: 'escritorio',
+    escritoriosVinculados: ['escrit-1'],
     status: 'ativo',
     dataCadastro: '2024-01-15',
     ultimoAcesso: '2024-03-15 16:45'
@@ -52,8 +56,9 @@ export const USUARIOS_MOCK: Usuario[] = [
     rg: '3456789',
     telefone: '(85) 98888-7777',
     cargo: 'Analista de Suporte',
-    tipoPerfil: 'zaneli-colaborador',
-    municipiosVinculados: ['1'],
+    tipoPerfil: 'comum',
+    tipoVinculo: 'escritorio',
+    escritoriosVinculados: ['escrit-2'],
     status: 'ativo',
     dataCadastro: '2024-02-01',
     ultimoAcesso: '2024-03-14 11:20'
@@ -66,8 +71,9 @@ export const USUARIOS_MOCK: Usuario[] = [
     rg: '4567890',
     telefone: '(85) 3452-8900',
     cargo: 'Secretária de Finanças',
-    tipoPerfil: 'prefeitura-gestor',
-    municipiosVinculados: ['1'], // Fortaleza
+    tipoPerfil: 'aprovador',
+    tipoVinculo: 'municipio',
+    municipiosVinculados: ['1'], 
     status: 'ativo',
     dataCadastro: '2024-01-20',
     ultimoAcesso: '2024-03-15 09:15'
@@ -80,8 +86,9 @@ export const USUARIOS_MOCK: Usuario[] = [
     rg: '5678901',
     telefone: '(85) 3452-8901',
     cargo: 'Assessor Técnico',
-    tipoPerfil: 'prefeitura-colaborador',
-    municipiosVinculados: ['1'], // Fortaleza
+    tipoPerfil: 'comum',
+    tipoVinculo: 'municipio',
+    municipiosVinculados: ['1'],
     status: 'ativo',
     dataCadastro: '2024-01-25',
     ultimoAcesso: '2024-03-15 13:50'
@@ -94,25 +101,12 @@ export const USUARIOS_MOCK: Usuario[] = [
     rg: '6789012',
     telefone: '(88) 3677-4500',
     cargo: 'Secretária de Administração',
-    tipoPerfil: 'prefeitura-gestor',
-    municipiosVinculados: ['2'], // Sobral
-    status: 'ativo',
+    tipoPerfil: 'aprovador',
+    tipoVinculo: 'municipio',
+    municipiosVinculados: ['2'],
+    status: 'inativo',
     dataCadastro: '2024-02-15',
     ultimoAcesso: '2024-03-14 17:30'
-  },
-  {
-    id: '7',
-    nomeCompleto: 'Paulo Henrique Costa',
-    email: 'paulo.costa@maracanau.ce.gov.br',
-    cpf: '789.012.345-66',
-    rg: '7890123',
-    telefone: '(85) 3371-1500',
-    cargo: 'Diretor de Contratos',
-    tipoPerfil: 'prefeitura-colaborador',
-    municipiosVinculados: ['5'], // Maracanaú
-    status: 'ativo',
-    dataCadastro: '2024-01-28',
-    ultimoAcesso: '2024-03-12 10:45'
   },
   {
     id: '8',
@@ -122,39 +116,53 @@ export const USUARIOS_MOCK: Usuario[] = [
     rg: '8901234',
     telefone: '(85) 99123-4567',
     cargo: 'Analista de Dados',
-    tipoPerfil: 'zaneli-colaborador',
-    municipiosVinculados: ['1', '2', '3', '4', '5'],
+    tipoPerfil: 'comum',
+    tipoVinculo: 'escritorio',
+    escritoriosVinculados: ['escrit-1'],
     status: 'inativo',
     dataCadastro: '2024-02-20',
     ultimoAcesso: '2024-03-01 08:00'
+  },
+  {
+    id: '9',
+    nomeCompleto: 'Ricardo Mont’Alverne',
+    email: 'ricardo.m@sobral.ce.gov.br',
+    cpf: '901.234.567-88',
+    rg: '9012345',
+    telefone: '(88) 3677-4501',
+    cargo: 'Técnico em Contabilidade',
+    tipoPerfil: 'comum',
+    tipoVinculo: 'municipio',
+    municipiosVinculados: ['2'],
+    status: 'ativo',
+    dataCadastro: '2024-03-10',
+    ultimoAcesso: '2024-03-27 15:20'
+  },
+  {
+    id: '10',
+    nomeCompleto: 'Francisco das Chagas',
+    email: 'chagas.f@caninde.ce.gov.br',
+    cpf: '012.345.678-99',
+    rg: '0123456',
+    telefone: '(85) 3343-1234',
+    cargo: 'Gestor de Contratos',
+    tipoPerfil: 'aprovador',
+    tipoVinculo: 'municipio',
+    municipiosVinculados: ['6'],
+    status: 'ativo',
+    dataCadastro: '2024-03-12',
+    ultimoAcesso: '2024-03-28 09:45'
   }
 ];
 
 export const PERFIS_CONFIG = {
-  'zaneli-admin': {
-    label: 'Zaneli - Admin',
-    color: 'bg-purple-100 text-purple-800 border-purple-300',
-    empresa: 'Zaneli'
+  'aprovador': {
+    label: 'Aprovador',
+    color: 'bg-blue-100 text-blue-800 border-blue-200'
   },
-  'zaneli-gestor': {
-    label: 'Zaneli - Gestor',
-    color: 'bg-blue-100 text-blue-800 border-blue-300',
-    empresa: 'Zaneli'
-  },
-  'zaneli-colaborador': {
-    label: 'Zaneli - Colaborador',
-    color: 'bg-cyan-100 text-cyan-800 border-cyan-300',
-    empresa: 'Zaneli'
-  },
-  'prefeitura-gestor': {
-    label: 'Prefeitura - Gestor',
-    color: 'bg-green-100 text-green-800 border-green-300',
-    empresa: 'Prefeitura'
-  },
-  'prefeitura-colaborador': {
-    label: 'Prefeitura - Colaborador',
-    color: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-    empresa: 'Prefeitura'
+  'comum': {
+    label: 'Comum',
+    color: 'bg-gray-100 text-gray-800 border-gray-200'
   }
 };
 
@@ -170,9 +178,6 @@ export const STATUS_USUARIO_CONFIG = {
 };
 
 export const TIPO_PERFIL_OPTIONS = [
-  { value: 'zaneli-admin', label: 'Zaneli - Admin', empresa: 'zaneli' },
-  { value: 'zaneli-gestor', label: 'Zaneli - Gestor', empresa: 'zaneli' },
-  { value: 'zaneli-colaborador', label: 'Zaneli - Colaborador', empresa: 'zaneli' },
-  { value: 'prefeitura-gestor', label: 'Prefeitura - Gestor', empresa: 'prefeitura' },
-  { value: 'prefeitura-colaborador', label: 'Prefeitura - Colaborador', empresa: 'prefeitura' }
+  { value: 'aprovador', label: 'Aprovador' },
+  { value: 'comum', label: 'Comum' }
 ];

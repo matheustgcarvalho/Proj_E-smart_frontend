@@ -11,7 +11,8 @@ import {
   MessageSquare,
   Briefcase,
   Building2,
-  Users
+  Users,
+  Building
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -49,6 +50,7 @@ export default function Sidebar({ currentView, onChangeView, isOpen, onToggle, o
       items: [
         { id: 'municipios', label: 'Municípios', icon: Building2 },
         { id: 'usuarios', label: 'Usuários', icon: Users },
+        { id: 'escritorios', label: 'Escritórios', icon: Building },
       ]
     },
     {
@@ -89,8 +91,10 @@ export default function Sidebar({ currentView, onChangeView, isOpen, onToggle, o
             )}
             <div className="space-y-1">
               {group.items.map((item) => {
-                // Considera 'unidadesgestoras' como parte de 'municipios'
-                const isActive = currentView === item.id || (item.id === 'municipios' && currentView === 'unidadesgestoras');
+                // Considera 'unidadesgestoras' como parte de 'municipios' e 'escritorio-detalhamento' como parte de 'escritorios'
+                const isActive = currentView === item.id || 
+                                (item.id === 'municipios' && currentView === 'unidadesgestoras') ||
+                                (item.id === 'escritorios' && currentView === 'escritorio-detalhamento');
                 
                 return (
                   <button

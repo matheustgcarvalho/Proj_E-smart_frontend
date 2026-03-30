@@ -10,9 +10,21 @@ interface HeaderProps {
   isSidebarOpen: boolean;
   onSettingsClick?: () => void;
   hideCitySelector?: boolean;
+  usuariosMode?: boolean; // Novo modo especial para tela de usuários
+  usuariosFiltro?: 'escritorio' | 'municipio'; // Filtro selecionado
+  onUsuariosFiltroChange?: (filtro: 'escritorio' | 'municipio') => void; // Callback
 }
 
-export default function Header({ currentCity, onChangeCity, isSidebarOpen, onSettingsClick, hideCitySelector = false }: HeaderProps) {
+export default function Header({ 
+  currentCity, 
+  onChangeCity, 
+  isSidebarOpen, 
+  onSettingsClick, 
+  hideCitySelector = false,
+  usuariosMode = false,
+  usuariosFiltro = 'municipio',
+  onUsuariosFiltroChange
+}: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [citySearch, setCitySearch] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -42,8 +54,81 @@ export default function Header({ currentCity, onChangeCity, isSidebarOpen, onSet
         isSidebarOpen ? 'left-64' : 'left-20'
       }`}
     >
-      {/* City Selector */}
-      {!hideCitySelector ? (
+      {/* City Selector ou Modo Usuários */}
+      {usuariosMode ? (
+        <div className="flex items-center gap-6">
+          <div className="relative" ref={dropdownRef}>
+            <button 
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center gap-2 px-4 py-1 bg-[#f7f7f7] hover:bg-[#efefef] border border-[#bbbbbb]/50 rounded-lg text-[#626262] transition-colors"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#2e6a50]/10 flex items-center justify-center text-[#2e6a50]">
+                <MapPin className="w-4 h-4" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs text-[#bbbbbb] font-medium">Filtrar Usuários por</p>
+                <p className="text-sm font-bold flex items-center gap-1 text-[#1a3e3e]">
+                  {usuariosFiltro === 'escritorio' ? 'Escritório' : 'Município'}
+                  <ChevronDown className={`w-4 h-4 text-[#bbbbbb] transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                </p>
+              </div>
+            </button>
+            
+            {/* Dropdown Content para Usuários */}
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-[#bbbbbb]/30 rounded-xl shadow-xl animate-in fade-in slide-in-from-top-2 duration-200 z-50 overflow-hidden">
+                <div className="p-1">
+                  <button
+                    onClick={() => {
+                      onUsuariosFiltroChange?.('escritorio');
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-colors ${
+                      usuariosFiltro === 'escritorio'
+                        ? 'bg-[#2e6a50]/10 text-[#2e6a50]'
+                        : 'hover:bg-[#f7f7f7] text-[#626262]'
+                    }`}
+                  >
+                    <MapPin className={`w-4 h-4 ${usuariosFiltro === 'escritorio' ? 'text-[#2e6a50]' : 'text-[#bbbbbb]'}`} />
+                    <span className="font-medium">Escritório</span>
+                    {usuariosFiltro === 'escritorio' && (
+                      <span className="ml-auto w-2 h-2 rounded-full bg-[#2e6a50]"></span>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      onUsuariosFiltroChange?.('municipio');
+                      setIsDropdownOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-colors ${
+                      usuariosFiltro === 'municipio'
+                        ? 'bg-[#2e6a50]/10 text-[#2e6a50]'
+                        : 'hover:bg-[#f7f7f7] text-[#626262]'
+                    }`}
+                  >
+                    <MapPin className={`w-4 h-4 ${usuariosFiltro === 'municipio' ? 'text-[#2e6a50]' : 'text-[#bbbbbb]'}`} />
+                    <span className="font-medium">Município</span>
+                    {usuariosFiltro === 'municipio' && (
+                      <span className="ml-auto w-2 h-2 rounded-full bg-[#2e6a50]"></span>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="h-8 w-px bg-[#bbbbbb]/30"></div>
+
+          <div className="flex items-center gap-2 text-[#bbbbbb] bg-[#f7f7f7] px-3 py-1.5 rounded-md border border-[#bbbbbb]/30">
+            <Search className="w-4 h-4" />
+            <input 
+              type="text" 
+              placeholder="Buscar indicadores, convênios..." 
+              className="bg-transparent border-none outline-none text-sm w-64 placeholder:text-[#bbbbbb] text-[#626262]"
+            />
+          </div>
+        </div>
+      ) : !hideCitySelector ? (
         <div className="flex items-center gap-6">
           <div className="relative" ref={dropdownRef}>
             <button 

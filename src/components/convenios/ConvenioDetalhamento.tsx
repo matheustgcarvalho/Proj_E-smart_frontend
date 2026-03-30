@@ -1484,7 +1484,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {/* Totalizadores com o novo indicador Rendimento */}
+                    {/* Totalizadores */}
                     <div className="bg-gradient-to-r from-[#e8f3ef] to-white p-4 rounded-lg border-2 border-[#2e6a50]">
                       <h3 className="text-sm font-bold text-[#1a3e3e] mb-3 uppercase tracking-wider">Resumo Consolidado</h3>
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -1506,7 +1506,6 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                             {formatarMoeda(registrosExecucao.reduce((sum, r) => sum + r.obtPagamentosRealizados, 0))}
                           </p>
                         </div>
-                        {/* Novo Indicador: Rendimento */}
                         <div className="text-center border-r border-gray-200 last:border-0">
                           <label className="text-xs font-medium text-emerald-700 block mb-1">Rendimento</label>
                           <p className="text-lg font-bold text-emerald-900">
@@ -1522,7 +1521,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                       </div>
                     </div>
 
-                    {/* Tabela de Registros */}
+                    {/* Tabela de Registros - SEM COLUNA ARQUIVO */}
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead className="bg-gray-50">
@@ -1532,7 +1531,6 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                             <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Contrapartida Aportada</th>
                             <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">OBT - Pagamentos</th>
                             <th className="text-right p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Saldo em Conta</th>
-                            <th className="text-center p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Arquivo</th>
                             <th className="text-center p-3 text-xs font-bold text-gray-700 border-b-2 border-[#2e6a50]">Ações</th>
                           </tr>
                         </thead>
@@ -1551,55 +1549,35 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                                 )}
                               </td>
                               <td className="p-3 text-right">
-                                <span className="font-bold text-blue-700 text-sm">
-                                  {formatarMoeda(registro.repasseFeito)}
-                                </span>
+                                <span className="font-bold text-blue-700 text-sm">{formatarMoeda(registro.repasseFeito)}</span>
                               </td>
                               <td className="p-3 text-right">
-                                <span className="font-bold text-purple-700 text-sm">
-                                  {formatarMoeda(registro.contrapartidaAportada)}
-                                </span>
+                                <span className="font-bold text-purple-700 text-sm">{formatarMoeda(registro.contrapartidaAportada)}</span>
                               </td>
                               <td className="p-3 text-right">
-                                <span className="font-bold text-orange-700 text-sm">
-                                  {formatarMoeda(registro.obtPagamentosRealizados)}
-                                </span>
+                                <span className="font-bold text-orange-700 text-sm">{formatarMoeda(registro.obtPagamentosRealizados)}</span>
                               </td>
                               <td className="p-3 text-right">
-                                <span className="font-bold text-green-700 text-sm">
-                                  {formatarMoeda(registro.saldoEmConta)}
-                                </span>
-                              </td>
-                              <td className="p-3 text-center">
-                                {registro.arquivo ? (
-                                  <Button size="sm" variant="ghost" className="text-xs">
-                                    <Download className="w-3 h-3 mr-1" />
-                                    Baixar
-                                  </Button>
-                                ) : (
-                                  <span className="text-xs text-gray-400">-</span>
-                                )}
+                                <span className="font-bold text-green-700 text-sm">{formatarMoeda(registro.saldoEmConta)}</span>
                               </td>
                               <td className="p-3">
                                 <div className="flex gap-1 justify-center">
                                   <Button
                                     size="sm"
                                     variant="outline"
+                                    className="h-7 px-2"
                                     onClick={() => {
                                       setExecucaoEditando(registro);
                                       setModalExecucaoAberto(true);
                                     }}
-                                    className="h-7 px-2"
                                   >
                                     <Edit className="w-3 h-3" />
                                   </Button>
                                   <Button
                                     size="sm"
                                     variant="destructive"
-                                    onClick={() => {
-                                      setRegistrosExecucao(registrosExecucao.filter(r => r.id !== registro.id));
-                                    }}
                                     className="h-7 px-2"
+                                    onClick={() => setRegistrosExecucao(registrosExecucao.filter(r => r.id !== registro.id))}
                                   >
                                     <Trash2 className="w-3 h-3" />
                                   </Button>

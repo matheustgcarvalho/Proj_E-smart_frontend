@@ -11,12 +11,16 @@ import ConveniosView from './components/views/ConveniosView';
 import ConvenioDetalhamento from './components/convenios/ConvenioDetalhamento';
 import CertidaoDetalhamento from './components/certidoes/CertidaoDetalhamento';
 import MunicipiosView from './components/views/MunicipiosView';
+import MunicipioDetalhamento from './components/municipios/MunicipioDetalhamento';
 import UsuariosView from './components/views/UsuariosView';
 import UnidadesGestorasView from './components/views/UnidadesGestorasView';
+import EscritoriosView from './components/views/EscritoriosView';
+import EscritorioDetalhamento from './components/escritorios/EscritorioDetalhamento';
 import SettingsView from './components/views/SettingsView';
 import { CITIES } from './lib/data';
 import type { Municipio } from './lib/municipios-data';
 import type { Certidao } from './lib/certidoes-data';
+import type { Escritorio } from './lib/escritorios-data';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -26,6 +30,8 @@ function App() {
   const [municipioSelecionado, setMunicipioSelecionado] = useState<Municipio | null>(null);
   const [convenioSelecionadoId, setConvenioSelecionadoId] = useState<string | null>(null);
   const [certidaoSelecionada, setCertidaoSelecionada] = useState<Certidao | null>(null);
+  const [escritorioSelecionado, setEscritorioSelecionado] = useState<Escritorio | null>(null);
+  const [usuariosFiltro, setUsuariosFiltro] = useState<'escritorio' | 'municipio'>('municipio');
   
   // Estado para o tema (Dark Mode)
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -106,15 +112,48 @@ function App() {
               setMunicipioSelecionado(municipio);
               setCurrentView('unidadesgestoras');
             }}
+            onVerDetalhamento={(municipio) => {
+              setMunicipioSelecionado(municipio);
+              setCurrentView('municipio-detalhamento');
+            }}
           />
         );
+      case 'municipio-detalhamento':
+        return municipioSelecionado ? (
+          <MunicipioDetalhamento 
+            municipio={municipioSelecionado} 
+            onBack={() => {
+              setMunicipioSelecionado(null);
+              setCurrentView('municipios');
+            }}
+          />
+        ) : null;
       case 'usuarios':
-        return <UsuariosView city={currentCity} />;
+        return <UsuariosView city={currentCity} filtro={usuariosFiltro} />;
       case 'unidadesgestoras':
         return municipioSelecionado ? (
           <UnidadesGestorasView 
             municipio={municipioSelecionado}
             onBack={() => setCurrentView('municipios')}
+          />
+        ) : null;
+      case 'escritorios':
+        return (
+          <EscritoriosView 
+            onOpenDetalhamento={(escritorio: Escritorio) => {
+              setEscritorioSelecionado(escritorio);
+              setCurrentView('escritorio-detalhamento');
+            }}
+          />
+        );
+      case 'escritorio-detalhamento':
+        return escritorioSelecionado ? (
+          <EscritorioDetalhamento 
+            escritorio={escritorioSelecionado} 
+            onBack={() => {
+              setEscritorioSelecionado(null);
+              setCurrentView('escritorios');
+            }}
           />
         ) : null;
       case 'settings':
@@ -150,7 +189,16 @@ function App() {
           onChangeCity={setCurrentCityId}
           isSidebarOpen={isSidebarOpen}
           onSettingsClick={() => setCurrentView('settings')}
-          hideCitySelector={currentView === 'municipios' || currentView === 'unidadesgestoras'}
+          usuariosMode={currentView === 'usuarios'}
+          usuariosFiltro={usuariosFiltro}
+          onUsuariosFiltroChange={setUsuariosFiltro}
+          hideCitySelector={
+            currentView === 'municipios' || 
+            currentView === 'municipio-detalhamento' ||
+            currentView === 'unidadesgestoras' || 
+            currentView === 'escritorios' || 
+            currentView === 'escritorio-detalhamento'
+          }
         />
         
         <main className="flex-1 mt-16 p-6 md:p-8 overflow-y-auto">
