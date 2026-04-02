@@ -13,7 +13,8 @@ import {
   Phone,
   Briefcase,
   MapPin,
-  Building
+  Building,
+  Clock
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -27,7 +28,6 @@ import {
   USUARIOS_MOCK, 
   PERFIS_CONFIG, 
   STATUS_USUARIO_CONFIG,
-  TIPO_PERFIL_OPTIONS,
   Usuario 
 } from '../../lib/usuarios-data';
 import { MUNICIPIOS_MOCK } from '../../lib/municipios-data';
@@ -110,7 +110,7 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
       cargo: usuario.cargo,
       tipoPerfil: usuario.tipoPerfil,
       tipoVinculo: usuario.tipoVinculo,
-      escritoriosVinculados: usuario.escritoriosVinculados || (usuario.escritorioVinculado ? [usuario.escritorioVinculado] : []),
+      escritoriosVinculados: usuario.escritoriosVinculados || [],
       municipiosVinculados: usuario.municipiosVinculados || []
     });
     setCadastroModalOpen(true);
@@ -165,14 +165,20 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
 
   const getVinculoDisplay = (usuario: Usuario) => {
     if (usuario.tipoVinculo === 'escritorio') {
-      const ids = usuario.escritoriosVinculados && usuario.escritoriosVinculados.length > 0 
-        ? usuario.escritoriosVinculados 
-        : (usuario.escritorioVinculado ? [usuario.escritorioVinculado] : []);
-      return ids.map(id => getEscritorioNome(id)).join(', ');
-    } else if (usuario.tipoVinculo === 'municipio' && usuario.municipiosVinculados && usuario.municipiosVinculados.length > 0) {
-      return getMunicipiosNomes(usuario.municipiosVinculados);
+      return (usuario.escritoriosVinculados || []).map(id => getEscritorioNome(id)).join(', ');
+    } else if (usuario.tipoVinculo === 'municipio') {
+      return getMunicipiosNomes(usuario.municipiosVinculados || []);
     }
     return 'N/A';
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'ativo': return <CheckCircle2 className="w-3 h-3" />;
+      case 'inativo': return <XCircle className="w-3 h-3" />;
+      case 'pendente': return <Clock className="w-3 h-3" />;
+      default: return null;
+    }
   };
 
   return (
@@ -184,35 +190,23 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
         </div>
         <div className="flex-1">
           <h1 className="text-2xl font-bold text-[#2e2e2e]">Cadastro de Usuários</h1>
-          <p className="text-sm text-[#626262] mt-1">
-            Gerencie os usuários do sistema e seus perfis de acesso
-          </p>
+          <p className="text-sm text-[#626262] mt-1">Gerencie os usuários do sistema e seus perfis de acesso</p>
         </div>
-        <Button 
-          onClick={handleOpenCadastro}
-          className="bg-[#2e6a50] hover:bg-[#1a3e3e] text-white"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Novo Usuário
+        <Button onClick={handleOpenCadastro} className="bg-[#2e6a50] hover:bg-[#1a3e3e] text-white">
+          <Plus className="w-4 h-4 mr-2" /> Novo Usuário
         </Button>
       </div>
 
-      {/* Indicador de Filtro Selecionado */}
+      {/* Indicador de Contexto */}
       <Card className="border-l-4 border-l-[#2e6a50] bg-gradient-to-r from-[#2e6a50]/5 to-transparent">
         <CardContent className="pt-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-[#2e6a50] rounded-lg flex items-center justify-center">
-              {filtro === 'escritorio' ? (
-                <Building className="w-5 h-5 text-white" />
-              ) : (
-                <MapPin className="w-5 h-5 text-white" />
-              )}
+              {filtro === 'escritorio' ? <Building className="w-5 h-5 text-white" /> : <MapPin className="w-5 h-5 text-white" />}
             </div>
             <div>
-              <p className="text-xs text-gray-500 font-medium">Exibindo usuários de</p>
-              <p className="text-base font-bold text-[#2e6a50]">
-                {filtro === 'escritorio' ? 'Escritório' : 'Município'}
-              </p>
+              <p className="text-xs text-gray-500 font-medium uppercase">Exibindo usuários de</p>
+              <p className="text-base font-bold text-[#2e6a50]">{filtro === 'escritorio' ? 'Escritório' : 'Município'}</p>
             </div>
             <div className="ml-auto">
               <Badge className="bg-[#2e6a50] text-white">
@@ -229,38 +223,28 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                placeholder="Buscar por nome, e-mail, CPF ou cargo..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
+              <Input placeholder="Buscar por nome, e-mail, CPF ou cargo..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
             </div>
             <Select value={perfilFilter} onValueChange={setPerfilFilter}>
-              <SelectTrigger className="w-full md:w-56">
-                <SelectValue placeholder="Tipo de Perfil" />
-              </SelectTrigger>
+              <SelectTrigger className="w-full md:w-56"><SelectValue placeholder="Tipo de Perfil" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos os Perfis</SelectItem>
+                <SelectItem value="administrador">Administrador</SelectItem>
                 <SelectItem value="aprovador">Aprovador</SelectItem>
                 <SelectItem value="comum">Comum</SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full md:w-40">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
+              <SelectTrigger className="w-full md:w-40"><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos">Todos Status</SelectItem>
                 <SelectItem value="ativo">Ativo</SelectItem>
                 <SelectItem value="inativo">Inativo</SelectItem>
+                <SelectItem value="pendente">Pendente</SelectItem>
               </SelectContent>
             </Select>
             {hasActiveFilters && (
-              <Button variant="outline" onClick={clearFilters} className="w-full md:w-auto">
-                <X className="w-4 h-4 mr-2" />
-                Limpar
-              </Button>
+              <Button variant="outline" onClick={clearFilters} className="w-full md:w-auto"><X className="w-4 h-4 mr-2" /> Limpar</Button>
             )}
           </div>
         </CardContent>
@@ -268,9 +252,7 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
 
       {/* Tabela de Usuários */}
       <Card>
-        <CardHeader>
-          <CardTitle>Usuários Cadastrados ({usuariosFiltrados.length})</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>Usuários Cadastrados ({usuariosFiltrados.length})</CardTitle></CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -280,9 +262,7 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">E-mail</th>
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">Cargo</th>
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">Perfil</th>
-                  <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">
-                    {filtro === 'escritorio' ? 'Escritório' : 'Município'}
-                  </th>
+                  <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">{filtro === 'escritorio' ? 'Escritório' : 'Município'}</th>
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">Status</th>
                   <th className="text-right py-3 px-4 font-semibold text-sm text-gray-700">Ações</th>
                 </tr>
@@ -290,46 +270,31 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
               <tbody>
                 {usuariosFiltrados.map((usuario) => {
                   const perfilConfig = PERFIS_CONFIG[usuario.tipoPerfil] || { label: usuario.tipoPerfil, color: 'bg-gray-100' };
-                  const statusConfig = STATUS_USUARIO_CONFIG[usuario.status];
+                  const statusConfig = STATUS_USUARIO_CONFIG[usuario.status] || { label: usuario.status, color: 'bg-gray-100' };
                   return (
                     <tr key={usuario.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                      <td className="py-3 px-4">
-                        <div className="font-medium text-gray-900">{usuario.nomeCompleto}</div>
-                      </td>
-                      <td className="py-3 px-4 text-sm text-gray-600">{usuario.email}</td>
+                      <td className="py-3 px-4 font-medium text-gray-900">{usuario.nomeCompleto}</td>
+                      <td className="py-3 px-4 text-sm text-gray-600 lowercase">{usuario.email}</td>
                       <td className="py-3 px-4 text-sm text-gray-600">{usuario.cargo}</td>
                       <td className="py-3 px-4">
-                        <Badge className={`${perfilConfig.color}`}>
-                          {perfilConfig.label}
-                        </Badge>
+                        <Badge className={`${perfilConfig.color} border shadow-sm`}>{perfilConfig.label}</Badge>
                       </td>
                       <td className="py-3 px-4">
-                        <div className="flex items-center gap-1">
-                          {usuario.tipoVinculo === 'escritorio' ? (
-                            <Building className="w-3 h-3 text-gray-400" />
-                          ) : (
-                            <MapPin className="w-3 h-3 text-gray-400" />
-                          )}
-                          <span className="text-sm text-gray-900">{getVinculoDisplay(usuario)}</span>
+                        <div className="flex items-center gap-1 text-sm text-gray-900">
+                          {usuario.tipoVinculo === 'escritorio' ? <Building className="w-3 h-3 text-gray-400" /> : <MapPin className="w-3 h-3 text-gray-400" />}
+                          {getVinculoDisplay(usuario)}
                         </div>
                       </td>
                       <td className="py-3 px-4">
-                        <Badge className={`${statusConfig.color} flex items-center gap-1 w-fit`}>
-                          {usuario.status === 'ativo' ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
-                          {statusConfig.label}
+                        <Badge className={`${statusConfig.color} flex items-center gap-1 w-fit border shadow-sm`}>
+                          {getStatusIcon(usuario.status)} {statusConfig.label}
                         </Badge>
                       </td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="sm" onClick={() => handleVerDetalhes(usuario)} className="hover:bg-blue-50">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(usuario)} className="hover:bg-green-50">
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" className="hover:bg-red-50 text-red-600">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleVerDetalhes(usuario)} className="hover:bg-blue-50"><Eye className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleOpenEdit(usuario)} className="hover:bg-green-50"><Edit className="w-4 h-4" /></Button>
+                          <Button variant="ghost" size="sm" className="hover:bg-red-50 text-red-600"><Trash2 className="w-4 h-4" /></Button>
                         </div>
                       </td>
                     </tr>
@@ -350,16 +315,12 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
           </DialogHeader>
 
           <div className="space-y-6 py-4">
-            {/* PERFIL E PERMISSÕES - REORDENADO PARA O TOPO */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 mb-4">Vínculo e Perfil</h3>
               <div className="space-y-4">
                 <div>
                   <Label>Tipo de Vínculo *</Label>
-                  <Select 
-                    value={formData.tipoVinculo} 
-                    onValueChange={(value: 'escritorio' | 'municipio') => setFormData({ ...formData, tipoVinculo: value, escritoriosVinculados: [], municipiosVinculados: [] })}
-                  >
+                  <Select value={formData.tipoVinculo} onValueChange={(value: any) => setFormData({ ...formData, tipoVinculo: value, escritoriosVinculados: [], municipiosVinculados: [] })}>
                     <SelectTrigger><SelectValue placeholder="Selecione o tipo de vínculo" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="escritorio">Escritório</SelectItem>
@@ -368,63 +329,40 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
                   </Select>
                 </div>
 
-                {/* LISTAGEM DE ESCRITÓRIOS COM CHECKBOX */}
                 {formData.tipoVinculo === 'escritorio' && (
-                  <div>
-                    <Label>Escritórios Vinculados *</Label>
-                    <div className="border rounded-lg p-4 space-y-3 max-h-48 overflow-y-auto mt-2 bg-white shadow-sm">
-                      {ESCRITORIOS_DATA.map((escritorio) => (
-                        <div key={escritorio.id} className="flex items-start gap-3">
-                          <Checkbox 
-                            id={`escritorio-${escritorio.id}`} 
-                            checked={formData.escritoriosVinculados.includes(escritorio.id)} 
-                            onCheckedChange={() => handleToggleEscritorio(escritorio.id)} 
-                          />
-                          <Label htmlFor={`escritorio-${escritorio.id}`} className="text-sm font-normal cursor-pointer flex-1">
-                            <div className="font-medium text-gray-900">{escritorio.nome}</div>
-                            <div className="text-xs text-gray-500">{escritorio.municipio} - {escritorio.uf}</div>
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="border rounded-lg p-4 space-y-3 max-h-48 overflow-y-auto bg-gray-50/30">
+                    <Label className="text-xs text-gray-500 uppercase">Escritórios Disponíveis</Label>
+                    {ESCRITORIOS_DATA.map((esc) => (
+                      <div key={esc.id} className="flex items-start gap-3">
+                        <Checkbox id={`esc-${esc.id}`} checked={formData.escritoriosVinculados.includes(esc.id)} onCheckedChange={() => handleToggleEscritorio(esc.id)} />
+                        <Label htmlFor={`esc-${esc.id}`} className="text-sm font-normal cursor-pointer flex-1">
+                          <span className="font-medium">{esc.nome}</span>
+                        </Label>
+                      </div>
+                    ))}
                   </div>
                 )}
 
-                {/* LISTAGEM DE MUNICÍPIOS COM CHECKBOX */}
                 {formData.tipoVinculo === 'municipio' && (
-                  <div>
-                    <Label>Municípios Vinculados *</Label>
-                    <div className="border rounded-lg p-4 space-y-3 max-h-60 overflow-y-auto mt-2 bg-white shadow-sm">
-                      {MUNICIPIOS_MOCK.map((municipio) => (
-                        <div key={municipio.id} className="flex items-start gap-3">
-                          <Checkbox
-                            id={`municipio-${municipio.id}`}
-                            checked={formData.municipiosVinculados.includes(municipio.id)}
-                            onCheckedChange={() => handleToggleMunicipio(municipio.id)}
-                          />
-                          <Label 
-                            htmlFor={`municipio-${municipio.id}`}
-                            className="text-sm font-normal cursor-pointer flex-1"
-                          >
-                            <div className="font-medium text-gray-900">{municipio.nome} - {municipio.uf}</div>
-                            <div className="text-xs text-gray-500">CNPJ: {municipio.cnpj}</div>
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="border rounded-lg p-4 space-y-3 max-h-48 overflow-y-auto bg-gray-50/30">
+                    <Label className="text-xs text-gray-500 uppercase">Municípios Disponíveis</Label>
+                    {MUNICIPIOS_MOCK.map((mun) => (
+                      <div key={mun.id} className="flex items-start gap-3">
+                        <Checkbox id={`mun-${mun.id}`} checked={formData.municipiosVinculados.includes(mun.id)} onCheckedChange={() => handleToggleMunicipio(mun.id)} />
+                        <Label htmlFor={`mun-${mun.id}`} className="text-sm font-normal cursor-pointer flex-1">
+                          <span className="font-medium">{mun.nome} - {mun.uf}</span>
+                        </Label>
+                      </div>
+                    ))}
                   </div>
                 )}
 
                 <div>
-                  <Label htmlFor="tipoPerfil">Tipo de Perfil *</Label>
-                  <Select 
-                    value={formData.tipoPerfil} 
-                    onValueChange={(value: any) => setFormData({ ...formData, tipoPerfil: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o perfil" />
-                    </SelectTrigger>
+                  <Label>Tipo de Perfil *</Label>
+                  <Select value={formData.tipoPerfil} onValueChange={(value) => setFormData({ ...formData, tipoPerfil: value })}>
+                    <SelectTrigger><SelectValue placeholder="Selecione o perfil" /></SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="administrador">Administrador</SelectItem>
                       <SelectItem value="aprovador">Aprovador</SelectItem>
                       <SelectItem value="comum">Comum</SelectItem>
                     </SelectContent>
@@ -433,27 +371,22 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
               </div>
             </div>
 
-            {/* DADOS PESSOAIS */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 mb-4">Dados Pessoais</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
-                  <Label htmlFor="nomeCompleto">Nome Completo *</Label>
-                  <Input id="nomeCompleto" value={formData.nomeCompleto} onChange={(e) => setFormData({ ...formData, nomeCompleto: e.target.value })} placeholder="Ex: João da Silva" />
-                </div>
-                <div><Label htmlFor="cpf">CPF *</Label><Input id="cpf" value={formData.cpf} onChange={(e) => setFormData({ ...formData, cpf: e.target.value })} placeholder="000.000.000-00" /></div>
-                <div><Label htmlFor="rg">RG *</Label><Input id="rg" value={formData.rg} onChange={(e) => setFormData({ ...formData, rg: e.target.value })} placeholder="0000000" /></div>
-                <div><Label htmlFor="telefone">Telefone *</Label><Input id="telefone" value={formData.telefone} onChange={(e) => setFormData({ ...formData, telefone: e.target.value })} placeholder="(00) 00000-0000" /></div>
-                <div><Label htmlFor="cargo">Cargo *</Label><Input id="cargo" value={formData.cargo} onChange={(e) => setFormData({ ...formData, cargo: e.target.value })} placeholder="Ex: Analista de Sistemas" /></div>
+                <div className="md:col-span-2"><Label>Nome Completo *</Label><Input value={formData.nomeCompleto} onChange={(e) => setFormData({ ...formData, nomeCompleto: e.target.value })} placeholder="Ex: João da Silva" /></div>
+                <div><Label>CPF *</Label><Input value={formData.cpf} onChange={(e) => setFormData({ ...formData, cpf: e.target.value })} placeholder="000.000.000-00" /></div>
+                <div><Label>RG *</Label><Input value={formData.rg} onChange={(e) => setFormData({ ...formData, rg: e.target.value })} placeholder="0000000" /></div>
+                <div><Label>Telefone *</Label><Input value={formData.telefone} onChange={(e) => setFormData({ ...formData, telefone: e.target.value })} placeholder="(00) 00000-0000" /></div>
+                <div><Label>Cargo *</Label><Input value={formData.cargo} onChange={(e) => setFormData({ ...formData, cargo: e.target.value })} placeholder="Ex: Analista" /></div>
               </div>
             </div>
 
-            {/* DADOS DE ACESSO */}
             <div>
               <h3 className="text-sm font-semibold text-gray-700 mb-4">Dados de Acesso</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2"><Label htmlFor="email">E-mail *</Label><Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="usuario@email.com" /></div>
-                <div className="md:col-span-2"><Label htmlFor="senha">{isEditMode ? 'Nova Senha (deixe em branco para manter)' : 'Senha *'}</Label><Input id="senha" type="password" value={formData.senha} onChange={(e) => setFormData({ ...formData, senha: e.target.value })} placeholder="••••••••" /></div>
+                <div className="md:col-span-2"><Label>E-mail *</Label><Input type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="usuario@email.com" /></div>
+                <div className="md:col-span-2"><Label>{isEditMode ? 'Nova Senha (opcional)' : 'Senha *'}</Label><Input type="password" value={formData.senha} onChange={(e) => setFormData({ ...formData, senha: e.target.value })} placeholder="••••••••" /></div>
               </div>
             </div>
           </div>
@@ -467,7 +400,7 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
         </DialogContent>
       </Dialog>
 
-      {/* Modal de Detalhes - Visual Estruturado e Fontes Padronizadas */}
+      {/* Modal de Detalhes - Layout Estruturado */}
       <Dialog open={detalhesModalOpen} onOpenChange={setDetalhesModalOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader className="border-b pb-4">
@@ -481,8 +414,6 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
           
           {usuarioSelecionado && (
             <div className="py-4 space-y-8">
-              
-              {/* BLOCO 1: IDENTIFICAÇÃO */}
               <section>
                 <div className="flex items-center gap-2 mb-4">
                    <div className="h-4 w-1 bg-[#2e6a50] rounded-full" />
@@ -493,24 +424,17 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
                     <Label className="text-xs text-gray-500">Nome completo</Label>
                     <p className="font-semibold mt-1 text-gray-900 text-base">{usuarioSelecionado.nomeCompleto}</p>
                   </div>
-
                   <div>
                     <Label className="text-xs text-gray-500">CPF</Label>
-                    <p className="font-semibold mt-1 text-gray-900 font-mono italic">
-                      {usuarioSelecionado.cpf}
-                    </p>
+                    <p className="font-semibold mt-1 text-gray-900 font-mono italic">{usuarioSelecionado.cpf}</p>
                   </div>
-
                   <div>
                     <Label className="text-xs text-gray-500">RG</Label>
-                    <p className="font-semibold mt-1 text-gray-900 font-mono italic">
-                      {usuarioSelecionado.rg || '---'}
-                    </p>
+                    <p className="font-semibold mt-1 text-gray-900 font-mono italic">{usuarioSelecionado.rg || '---'}</p>
                   </div>
                 </div>
               </section>
 
-              {/* BLOCO 2: CONTATO E CARGO */}
               <section>
                 <div className="flex items-center gap-2 mb-4">
                    <div className="h-4 w-1 bg-[#2e6a50] rounded-full" />
@@ -519,31 +443,19 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-1">
                   <div>
                     <Label className="text-xs text-gray-500">Telefone</Label>
-                    <p className="font-semibold mt-1 text-gray-900 flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-gray-400" />
-                      {usuarioSelecionado.telefone || '---'}
-                    </p>
+                    <p className="font-semibold mt-1 text-gray-900 flex items-center gap-2"><Phone className="w-4 h-4 text-gray-400" />{usuarioSelecionado.telefone || '---'}</p>
                   </div>
-
                   <div>
                     <Label className="text-xs text-gray-500">Cargo</Label>
-                    <p className="font-semibold mt-1 text-gray-900 flex items-center gap-2">
-                      <Briefcase className="w-4 h-4 text-gray-400" />
-                      {usuarioSelecionado.cargo}
-                    </p>
+                    <p className="font-semibold mt-1 text-gray-900 flex items-center gap-2"><Briefcase className="w-4 h-4 text-gray-400" />{usuarioSelecionado.cargo}</p>
                   </div>
-
                   <div className="md:col-span-2">
                     <Label className="text-xs text-gray-500">E-mail</Label>
-                    <p className="font-semibold mt-1 text-gray-900 flex items-center gap-2 lowercase">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      {usuarioSelecionado.email}
-                    </p>
+                    <p className="font-semibold mt-1 text-gray-900 flex items-center gap-2 lowercase"><Mail className="w-4 h-4 text-gray-400" />{usuarioSelecionado.email}</p>
                   </div>
                 </div>
               </section>
 
-              {/* BLOCO 3: ACESSO E VÍNCULOS */}
               <section className="bg-gray-50 p-5 rounded-xl border border-gray-100">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                   <div>
@@ -553,47 +465,31 @@ export default function UsuariosView({ city, filtro }: UsuariosViewProps) {
                       {usuarioSelecionado.tipoVinculo}
                     </p>
                   </div>
-
                   <div>
                     <Label className="text-xs text-gray-500">Tipo de perfil</Label>
                     <div className="mt-1">
-                      <Badge className={`${PERFIS_CONFIG[usuarioSelecionado.tipoPerfil]?.color || 'bg-gray-100'} border shadow-sm`}>
-                        {PERFIS_CONFIG[usuarioSelecionado.tipoPerfil]?.label || usuarioSelecionado.tipoPerfil}
-                      </Badge>
+                      <Badge className={`${PERFIS_CONFIG[usuarioSelecionado.tipoPerfil]?.color || 'bg-gray-100'} border shadow-sm`}>{PERFIS_CONFIG[usuarioSelecionado.tipoPerfil]?.label || usuarioSelecionado.tipoPerfil}</Badge>
                     </div>
                   </div>
-
                   <div>
                     <Label className="text-xs text-gray-500">Status</Label>
                     <div className="mt-1">
                       <Badge className={`${STATUS_USUARIO_CONFIG[usuarioSelecionado.status]?.color || 'bg-gray-100'} flex items-center gap-1 w-fit border shadow-sm`}>
-                        {usuarioSelecionado.status === 'ativo' ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
-                        {STATUS_USUARIO_CONFIG[usuarioSelecionado.status]?.label || usuarioSelecionado.status}
+                        {getStatusIcon(usuarioSelecionado.status)} {STATUS_USUARIO_CONFIG[usuarioSelecionado.status]?.label || usuarioSelecionado.status}
                       </Badge>
                     </div>
                   </div>
                 </div>
-
                 <div className="space-y-2">
-                  <Label className="text-xs text-gray-500 uppercase">
-                    {usuarioSelecionado.tipoVinculo === 'escritorio' ? 'Escritórios Vinculados' : 'Municípios Vinculados'}
-                  </Label>
-                  <div className="text-sm text-gray-700 bg-white p-3 rounded-lg border border-gray-200 font-medium">
-                    {getVinculoDisplay(usuarioSelecionado)}
-                  </div>
+                  <Label className="text-xs text-gray-500 uppercase">{usuarioSelecionado.tipoVinculo === 'escritorio' ? 'Escritórios Vinculados' : 'Municípios Vinculados'}</Label>
+                  <div className="text-sm text-gray-700 bg-white p-3 rounded-lg border border-gray-200 font-medium">{getVinculoDisplay(usuarioSelecionado)}</div>
                 </div>
               </section>
-
             </div>
           )}
           
           <DialogFooter className="border-t pt-4">
-            <Button 
-              variant="outline" 
-              onClick={() => setDetalhesModalOpen(false)}
-            >
-              Fechar
-            </Button>
+            <Button variant="outline" onClick={() => setDetalhesModalOpen(false)}>Fechar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
