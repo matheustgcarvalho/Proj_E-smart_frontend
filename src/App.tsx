@@ -16,8 +16,10 @@ import UsuariosView from './components/views/UsuariosView';
 import UnidadesGestorasView from './components/views/UnidadesGestorasView';
 import EscritoriosView from './components/views/EscritoriosView';
 import EscritorioDetalhamento from './components/escritorios/EscritorioDetalhamento';
+import NotificacoesView from './components/views/NotificacoesView';
 import SettingsView from './components/views/SettingsView';
 import { CITIES } from './lib/data';
+import { NOTIFICACOES_MOCK } from './lib/notificacoes-data';
 import type { Municipio } from './lib/municipios-data';
 import type { Certidao } from './lib/certidoes-data';
 import type { Escritorio } from './lib/escritorios-data';
@@ -35,6 +37,9 @@ function App() {
   
   // Estado para o tema (Dark Mode)
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Contagem de notificações não lidas
+  const notificacoesNaoLidas = NOTIFICACOES_MOCK.filter(n => !n.lida).length;
 
   const currentCity = CITIES.find(c => c.id === currentCityId) || CITIES[0];
 
@@ -156,6 +161,15 @@ function App() {
             }}
           />
         ) : null;
+      case 'notificacoes':
+        return (
+          <NotificacoesView 
+            onIrParaConvenio={(convenioId) => {
+              setConvenioSelecionadoId(convenioId);
+              setCurrentView('convenio-detalhamento');
+            }}
+          />
+        );
       case 'settings':
         return (
           <SettingsView 
@@ -177,6 +191,7 @@ function App() {
         isOpen={isSidebarOpen}
         onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
         onLogout={handleLogout}
+        notificacoesNaoLidas={notificacoesNaoLidas}
       />
       
       <div 
@@ -189,6 +204,7 @@ function App() {
           onChangeCity={setCurrentCityId}
           isSidebarOpen={isSidebarOpen}
           onSettingsClick={() => setCurrentView('settings')}
+          onNotificacaoClick={() => setCurrentView('notificacoes')}
           usuariosMode={currentView === 'usuarios'}
           usuariosFiltro={usuariosFiltro}
           onUsuariosFiltroChange={setUsuariosFiltro}

@@ -12,7 +12,8 @@ import {
   Briefcase,
   Building2,
   Users,
-  Building
+  Building,
+  Bell
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -21,14 +22,16 @@ interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   onLogout: () => void;
+  notificacoesNaoLidas?: number;
 }
 
-export default function Sidebar({ currentView, onChangeView, isOpen, onToggle, onLogout }: SidebarProps) {
+export default function Sidebar({ currentView, onChangeView, isOpen, onToggle, onLogout, notificacoesNaoLidas = 0 }: SidebarProps) {
   const menuGroups = [
     {
       title: 'Início',
       items: [
         { id: 'dashboard', label: 'Dashboards', icon: LayoutDashboard },
+        { id: 'notificacoes', label: 'Notificações', icon: Bell, badge: notificacoesNaoLidas },
       ]
     },
     {
@@ -109,6 +112,11 @@ export default function Sidebar({ currentView, onChangeView, isOpen, onToggle, o
                   >
                     <item.icon className="w-5 h-5 shrink-0" />
                     {isOpen && <span className="whitespace-nowrap overflow-hidden">{item.label}</span>}
+                    {item.badge && (
+                      <span className="ml-2 px-2 py-0.5 bg-red-500 text-white text-xs font-bold rounded-full">
+                        {item.badge}
+                      </span>
+                    )}
                   </button>
                 );
               })}

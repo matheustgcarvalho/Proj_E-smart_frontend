@@ -477,7 +477,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                       {isEstadual && (convenio as any).unidadeConcedente && (
                         <div>
                           <label className="text-sm font-medium text-gray-500">Unidade</label>
-                          <p className="text-base text-gray-900">{(convenio as any).unidadeConcedente}</p>
+                          <p className="text-base font-semibold text-gray-900">{(convenio as any).unidadeConcedente}</p>
                         </div>
                       )}
                     </div>
@@ -498,13 +498,13 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                       {isEstadual && (convenio as any).cnpjConveniado && (
                         <div>
                           <label className="text-sm font-medium text-gray-500">CNPJ</label>
-                          <p className="text-base text-gray-900">{(convenio as any).cnpjConveniado}</p>
+                          <p className="text-base font-semibold text-gray-900">{(convenio as any).cnpjConveniado}</p>
                         </div>
                       )}
                       {isEstadual && (convenio as any).localidade && (
                         <div>
                           <label className="text-sm font-medium text-gray-500">Localidade</label>
-                          <p className="text-base text-gray-900">{(convenio as any).localidade}</p>
+                          <p className="text-base font-semibold text-gray-900">{(convenio as any).localidade}</p>
                         </div>
                       )}
                     </div>
@@ -552,38 +552,29 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                 {/* Documentos do Convênio */}
                 <div className="pt-6 border-t">
                   <h3 className="text-sm font-bold text-gray-700 mb-4">Documentos do Convênio</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Button
                       variant="outline"
-                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
-                      onClick={() => window.open('#', '_blank')}
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Visualizar Íntegra do Convênio
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
+                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50] py-6"
                       onClick={() => {/* Download logic */ }}
                     >
-                      <Download className="w-4 h-4 mr-2" />
-                      Baixar Íntegra do Convênio
+                      <Download className="w-5 h-5 mr-3 text-[#2e6a50]" />
+                      <div className="text-left">
+                        <p className="text-sm font-bold text-gray-900">Baixar Íntegra do Convênio</p>
+                        <p className="text-xs text-gray-500 font-normal">Documento completo em PDF</p>
+                      </div>
                     </Button>
+
                     <Button
                       variant="outline"
-                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
-                      onClick={() => window.open('#', '_blank')}
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Visualizar Plano de Trabalho
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50]"
+                      className="w-full justify-start hover:bg-[#e8f3ef] hover:border-[#2e6a50] py-6"
                       onClick={() => {/* Download logic */ }}
                     >
-                      <Download className="w-4 h-4 mr-2" />
-                      Baixar Plano de Trabalho
+                      <Download className="w-5 h-5 mr-3 text-[#2e6a50]" />
+                      <div className="text-left">
+                        <p className="text-sm font-bold text-gray-900">Baixar Plano de Trabalho</p>
+                        <p className="text-xs text-gray-500 font-normal">Documento completo em PDF</p>
+                      </div>
                     </Button>
                   </div>
                 </div>
@@ -628,7 +619,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                 {isEstadual && (convenio as any).justificativa && (
                   <div className="pt-4 border-t">
                     <label className="text-sm font-medium text-gray-500 block">Justificativa</label>
-                    <p className="text-base text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-lg">
+                    <p className="text-base text-gray-900 leading-relaxed">
                       {(convenio as any).justificativa}
                     </p>
                   </div>
@@ -691,7 +682,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                   {isEstadual && (convenio as any).terminoOriginal && (
                     <div>
                       <label className="text-sm font-medium text-gray-500 block">Término Original</label>
-                      <p className="text-base text-gray-900">
+                      <p className="text-base font-semibold text-gray-900">
                         {new Date((convenio as any).terminoOriginal).toLocaleDateString('pt-BR')}
                       </p>
                     </div>
@@ -699,7 +690,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                   {isEstadual && (convenio as any).terminoAposAditivo && (
                     <div>
                       <label className="text-sm font-medium text-gray-500 block">Término Após Aditivo</label>
-                      <p className="text-base font-semibold text-blue-600">
+                      <p className="text-base font-semibold text-gray-900">
                         {new Date((convenio as any).terminoAposAditivo).toLocaleDateString('pt-BR')}
                       </p>
                     </div>
@@ -718,7 +709,7 @@ export default function ConvenioDetalhamento({ convenioId, onBack }: ConvenioDet
                   {isEstadual && (convenio as any).publicacaoPortal && (
                     <div>
                       <label className="text-sm font-medium text-gray-500 block">Publicação no Portal</label>
-                      <p className="text-base text-gray-900">
+                      <p className="text-base font-semibold text-gray-900">
                         {new Date((convenio as any).publicacaoPortal).toLocaleDateString('pt-BR')}
                       </p>
                     </div>
