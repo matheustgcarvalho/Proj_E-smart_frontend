@@ -150,9 +150,47 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
     setStatusFilter('todos');
     setInstituicaoFilter('todos');
     setVigenciaFilter('todos');
+    setCurrentPage(1);
   };
 
   const temFiltrosAtivos = searchQuery || statusFilter !== 'todos' || instituicaoFilter !== 'todos' || vigenciaFilter !== 'todos';
+  
+  // Paginacao
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const getPaginatedData = (data: any[]) => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return data.slice(startIndex, startIndex + itemsPerPage);
+  };
+
+  const getTotalPages = (totalItems: number) => Math.ceil(totalItems / itemsPerPage);
+
+  const paginatedEstaduais = getPaginatedData(conveniosEstaduaisFiltrados);
+  const paginatedFederais = getPaginatedData(conveniosFederaisFiltrados);
+
+  const totalPagesEstaduais = getTotalPages(conveniosEstaduaisFiltrados.length);
+  const totalPagesFederais = getTotalPages(conveniosFederaisFiltrados.length);
+
+  const PaginationControls = ({ totalPages, currentPage, onPageChange }: any) => (
+    <div className="flex items-center justify-center gap-2 mt-6">
+      <Button 
+        variant="outline" 
+        onClick={() => onPageChange(currentPage - 1)} 
+        disabled={currentPage === 1}
+      >
+        Anterior
+      </Button>
+      <span className="text-sm">Página {currentPage} de {totalPages || 1}</span>
+      <Button 
+        variant="outline" 
+        onClick={() => onPageChange(currentPage + 1)} 
+        disabled={currentPage >= totalPages}
+      >
+        Próxima
+      </Button>
+    </div>
+  );
 
   const abrirChamado = (id: string, numero: string, tipo: 'estadual' | 'federal') => {
     setConvenioSelecionado({ id, numero, tipo });
@@ -239,7 +277,7 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
           <div>
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Última Atualização</div>
             <p className="text-lg font-bold text-gray-900">
-              21/03/2024
+              21/03/2024 14:30
             </p>
           </div>
         </div>
@@ -390,7 +428,7 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
 
         {/* Convênios Estaduais */}
         <TabsContent value="estaduais" className="space-y-3">
-          {conveniosEstaduaisFiltrados.map((convenio) => {
+          {paginatedEstaduais.map((convenio) => {
             const diasRestantes = calcularDiasRestantes(convenio.vigenciaFim);
             
             return (
@@ -477,6 +515,14 @@ export default function ConveniosView({ city, onOpenDetalhamento }: ConveniosVie
               </Card>
             );
           })}
+          
+          {totalPagesEstaduais > 1 && (
+            <PaginationControls 
+              totalPages={totalPagesEstaduais} 
+              currentPage={currentPage} 
+              onPageChange={setCurrentPage} 
+            />
+          )}
 
           {conveniosEstaduaisFiltrados.length === 0 && (
             <Card>

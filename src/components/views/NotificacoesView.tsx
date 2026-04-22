@@ -113,11 +113,13 @@ export default function NotificacoesView({
     const diff = agora.getTime() - date.getTime();
     const horas = Math.floor(diff / (1000 * 60 * 60));
     const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    
+    const horaFormatada = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-    if (horas < 1) return 'Agora há pouco';
-    if (horas < 24) return `Há ${horas}h`;
-    if (dias < 7) return `Há ${dias}d`;
-    return date.toLocaleDateString('pt-BR');
+    if (horas < 1) return `Hoje, ${horaFormatada}`;
+    if (horas < 24) return `Hoje, ${horaFormatada}`;
+    if (dias < 7) return `${date.toLocaleDateString('pt-BR', { weekday: 'short' })}, ${horaFormatada}`;
+    return `${date.toLocaleDateString('pt-BR')}, ${horaFormatada}`;
   };
 
   return (
@@ -331,12 +333,12 @@ function NotificacaoCard({
   formatarData
 }: NotificacaoCardProps) {
   const tipoConfig = TIPO_NOTIFICACAO_CONFIG[notificacao.tipo];
-  const prioridadeConfig = PRIORIDADE_CONFIG[notificacao.prioridade];
+  const isAprovacao = notificacao.tipo === 'aprovacao-usuario';
 
   return (
     <div className={`border rounded-lg p-4 transition-all ${!notificacao.lida ? 'bg-blue-50/50 border-blue-200' : 'bg-white border-gray-200'}`}>
       <div className="flex items-start gap-4">
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl shrink-0 ${!notificacao.lida ? 'bg-blue-100' : 'bg-gray-100'}`}>
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl shrink-0 ${!notificacao.lida ? 'bg-blue-100' : 'bg-gray-100'}`}>
           {tipoConfig.icon}
         </div>
 
@@ -351,7 +353,6 @@ function NotificacaoCard({
               
               <div className="flex items-center gap-2 mt-3 flex-wrap">
                 <Badge className={`text-xs ${tipoConfig.color}`}>{tipoConfig.label}</Badge>
-                <Badge className={`text-xs ${prioridadeConfig.color}`}>{prioridadeConfig.label}</Badge>
                 <span className="text-xs text-gray-500 flex items-center gap-1">
                   <Clock className="w-3 h-3" /> {formatarData(notificacao.data)}
                 </span>
@@ -359,7 +360,7 @@ function NotificacaoCard({
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              {!notificacao.lida && (
+              {!notificacao.lida && !isAprovacao && (
                 <Button variant="ghost" size="sm" onClick={() => onMarcarLida(notificacao.id)} className="text-xs">
                   <Eye className="w-3 h-3 mr-1" /> Marcar como lida
                 </Button>
@@ -368,7 +369,7 @@ function NotificacaoCard({
           </div>
 
           <div className="flex flex-col gap-2 mt-4">
-            {notificacao.tipo === 'aprovacao-usuario' && (
+            {isAprovacao ? (
               notificacao.statusAcao === 'aprovado' ? (
                 <div className="flex items-center gap-1.5 text-green-600 bg-green-50 px-3 py-1.5 rounded-lg border border-green-200 w-fit">
                   <CheckCircle2 className="w-4 h-4" />
@@ -380,7 +381,6 @@ function NotificacaoCard({
                     <XCircle className="w-4 h-4" />
                     <span className="text-xs font-bold">Solicitação Recusada</span>
                   </div>
-                  {/* EXIBIÇÃO DO MOTIVO: Aparece logo abaixo do selo de recusado */}
                   {notificacao.motivoStatus && (
                     <div className="flex items-start gap-2 bg-gray-50 p-3 rounded-lg border border-gray-100 italic">
                       <MessageSquare className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
@@ -400,12 +400,15 @@ function NotificacaoCard({
                   </Button>
                 </div>
               )
-            )}
-            
-            {notificacao.tipo === 'alerta-convenio' && notificacao.convenioId && (
-              <Button size="sm" className="bg-[#2e6a50] hover:bg-[#1a3e3e] text-white w-fit" onClick={() => onIrConvenio(notificacao.convenioId!, notificacao.id)}>
-                Ver Convênio <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
+            ) : (
+              notificacao.tipo === 'alerta-convenio' && notificacao.convenioId && (
+                <button 
+                  onClick={() => onIrConvenio(notificacao.convenioId!, notificacao.id)}
+                  className="text-sm font-medium text-[#2e6a50] hover:underline flex items-center gap-1"
+                >
+                  Ver Convênio <ChevronRight className="w-4 h-4" />
+                </button>
+              )
             )}
           </div>
         </div>

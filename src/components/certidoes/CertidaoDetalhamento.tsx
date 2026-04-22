@@ -19,6 +19,14 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '../ui/table';
 import { getDaysRemaining } from '../../lib/certidoes-data';
 import type { Certidao, Inadimplencia } from '../../lib/certidoes-data';
 
@@ -71,42 +79,82 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
     switch (certidao.tipo) {
       case 'transparencia_fiscal':
         if (!certidao.camposTransparenciaFiscal) return null;
-        const { municipio, codigoIBGE, entidade, numeroCertidao, hashCertidao } = certidao.camposTransparenciaFiscal;
+        const { municipio, codigoIBGE, entidade, numeroCertidao, hashCertidao, statusGeral, urlPortal, itensTransparencia } = certidao.camposTransparenciaFiscal;
         return (
-          <Card>
-            <CardHeader className="bg-[#f7f7f7]">
-              <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
-                <FileCheck className="w-5 h-5 text-[#2e6a50]" />
-                Informações Específicas
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Município</label>
-                  <p className="text-base font-semibold text-gray-900">{municipio}</p>
+          <>
+            <Card>
+              <CardHeader className="bg-[#f7f7f7]">
+                <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
+                  <FileCheck className="w-5 h-5 text-[#2e6a50]" />
+                  Informações Específicas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Município</label>
+                    <p className="text-base font-semibold text-gray-900">{municipio}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Código IBGE</label>
+                    <p className="text-base font-mono text-gray-900">{codigoIBGE}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Entidade</label>
+                    <p className="text-base font-semibold text-gray-900">{entidade}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Número da Certidão</label>
+                    <p className="text-base font-mono text-gray-900">{numeroCertidao}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Status Geral</label>
+                    <Badge className="mt-1">{statusGeral}</Badge>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">URL do Portal</label>
+                    <p className="text-sm text-blue-600 hover:underline truncate mt-1">
+                      <a href={urlPortal} target="_blank" rel="noopener noreferrer">{urlPortal}</a>
+                    </p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="text-sm font-medium text-gray-500">Hash da Certidão</label>
+                    <p className="text-sm font-mono text-gray-900 bg-gray-50 p-3 rounded-lg mt-1 break-all">
+                      {hashCertidao}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Código IBGE</label>
-                  <p className="text-base font-mono text-gray-900">{codigoIBGE}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Entidade</label>
-                  <p className="text-base font-semibold text-gray-900">{entidade}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Número da Certidão</label>
-                  <p className="text-base font-mono text-gray-900">{numeroCertidao}</p>
-                </div>
-                <div className="md:col-span-2">
-                  <label className="text-sm font-medium text-gray-500">Hash da Certidão</label>
-                  <p className="text-sm font-mono text-gray-900 bg-gray-50 p-3 rounded-lg mt-1 break-all">
-                    {hashCertidao}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {itensTransparencia && itensTransparencia.length > 0 && (
+              <Card>
+                <CardHeader className="bg-[#f7f7f7]">
+                  <CardTitle className="text-[#1a3e3e]">Itens de Transparência</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Descrição</TableHead>
+                        <TableHead className="text-right">Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {itensTransparencia.map((item, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="text-sm">{item.descricao}</TableCell>
+                          <TableCell className="text-right">
+                            <Badge variant="outline" className="text-xs">{item.status}</Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            )}
+          </>
         );
 
       case 'regularidade_fgts':
@@ -130,6 +178,14 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
                   <label className="text-sm font-medium text-gray-500">Número da Certidão</label>
                   <p className="text-base font-mono text-gray-900">{fgts.numeroCertidao}</p>
                 </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Empresa</label>
+                  <p className="text-base font-semibold text-gray-900">{fgts.empresa}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Status</label>
+                  <Badge className="mt-1">{fgts.status}</Badge>
+                </div>
               </div>
               <div className="pt-4 border-t">
                 <label className="text-sm font-medium text-gray-500">Mensagem</label>
@@ -141,9 +197,9 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
           </Card>
         );
 
-      case 'debitos_estaduais':
-        if (!certidao.camposDebitosEstaduais) return null;
-        const debitos = certidao.camposDebitosEstaduais;
+      case 'regularidade_rfb':
+        if (!certidao.camposRegularidadeRFB) return null;
+        const rfb = certidao.camposRegularidadeRFB;
         return (
           <Card>
             <CardHeader className="bg-[#f7f7f7]">
@@ -155,24 +211,155 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
             <CardContent className="pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
+                  <label className="text-sm font-medium text-gray-500">Documento (CNPJ)</label>
+                  <p className="text-base font-mono text-gray-900">{rfb.cnpj}</p>
+                </div>
+                <div>
                   <label className="text-sm font-medium text-gray-500">Número da Certidão</label>
-                  <p className="text-base font-mono text-gray-900">{debitos.numeroCertidao}</p>
+                  <p className="text-base font-mono text-gray-900">{rfb.numeroCertidao}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">CNPJ</label>
-                  <p className="text-base font-mono text-gray-900">{debitos.cnpj}</p>
+                  <label className="text-sm font-medium text-gray-500">Situação</label>
+                  <p className="text-base font-semibold text-gray-900">{rfb.situacao}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Razão Social</label>
-                  <p className="text-base font-semibold text-gray-900">{debitos.razaoSocial}</p>
+                  <label className="text-sm font-medium text-gray-500">Status</label>
+                  <Badge className="mt-1">{rfb.status}</Badge>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Inscrição Estadual (CGF)</label>
-                  <p className="text-base font-mono text-gray-900">{debitos.inscricaoEstadual}</p>
+                <div className="md:col-span-2">
+                  <label className="text-sm font-medium text-gray-500">Descrição do Status</label>
+                  <p className="text-sm text-gray-700 mt-1">{rfb.descricaoStatus}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
+        );
+
+      case 'debitos_estaduais':
+        if (!certidao.camposDebitosEstaduais) return null;
+        const debitos = certidao.camposDebitosEstaduais;
+        return (
+          <>
+            <Card>
+              <CardHeader className="bg-[#f7f7f7]">
+                <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
+                  <FileCheck className="w-5 h-5 text-[#2e6a50]" />
+                  Resumo de Débitos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Quantidade de Dívidas</label>
+                    <p className="text-2xl font-bold text-gray-900">{debitos.dividasCount}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Valor Total</label>
+                    <p className="text-2xl font-bold text-red-600">{debitos.valorTotal}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-[#f7f7f7]">
+                <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
+                  <FileCheck className="w-5 h-5 text-[#2e6a50]" />
+                  Certidão Negativa
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Número da Certidão</label>
+                    <p className="text-base font-mono text-gray-900">{debitos.numeroCertidao}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">CNPJ</label>
+                    <p className="text-base font-mono text-gray-900">{debitos.cnpj}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Razão Social</label>
+                    <p className="text-base font-semibold text-gray-900">{debitos.razaoSocial}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Inscrição Estadual (CGF)</label>
+                    <p className="text-base font-mono text-gray-900">{debitos.inscricaoEstadual}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-[#f7f7f7]">
+                <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
+                  <FileCheck className="w-5 h-5 text-[#2e6a50]" />
+                  Saldo Devedor
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                  <div className="p-3 bg-gray-50 rounded-lg border">
+                    <label className="text-xs font-medium text-gray-500 uppercase">Total Geral</label>
+                    <p className="text-lg font-bold text-gray-900">{debitos.saldoDevedor.totalGeral}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg border">
+                    <label className="text-xs font-medium text-gray-500 uppercase">Tributárias Ajuiz.</label>
+                    <p className="text-sm font-semibold text-gray-900">{debitos.saldoDevedor.tributariasAjuizado}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg border">
+                    <label className="text-xs font-medium text-gray-500 uppercase">Tributárias Não Ajuiz.</label>
+                    <p className="text-sm font-semibold text-gray-900">{debitos.saldoDevedor.tributariasNaoAjuizado}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg border">
+                    <label className="text-xs font-medium text-gray-500 uppercase">Não Trib. Ajuiz.</label>
+                    <p className="text-sm font-semibold text-gray-900">{debitos.saldoDevedor.naoTributariasAjuizado}</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 rounded-lg border">
+                    <label className="text-xs font-medium text-gray-500 uppercase">Não Trib. Não Ajuiz.</label>
+                    <p className="text-sm font-semibold text-gray-900">{debitos.saldoDevedor.naoTributariasNaoAjuizado}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="bg-[#f7f7f7]">
+                <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
+                  <FileCheck className="w-5 h-5 text-[#2e6a50]" />
+                  Detalhamento de Débitos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Inscrição</TableHead>
+                        <TableHead>Ajuizada</TableHead>
+                        <TableHead>Fase Atual</TableHead>
+                        <TableHead>Origem</TableHead>
+                        <TableHead>Receita</TableHead>
+                        <TableHead className="text-right">Saldo Devedor</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {debitos.detalhamentoDebitos.map((deb, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="text-xs font-mono">{deb.numeroInscricao}</TableCell>
+                          <TableCell className="text-center">{deb.ajuizada ? 'Sim' : 'Não'}</TableCell>
+                          <TableCell className="text-xs">{deb.faseAtual}</TableCell>
+                          <TableCell className="text-xs">{deb.origem}</TableCell>
+                          <TableCell className="text-xs">{deb.receita}</TableCell>
+                          <TableCell className="text-right font-semibold text-red-600">{deb.saldoDevedor}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </>
         );
 
       case 'regularidade_precatorios':
@@ -195,6 +382,10 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
                 <div>
                   <label className="text-sm font-medium text-gray-500">Entidade</label>
                   <p className="text-base font-semibold text-gray-900">{precatorios.entidade}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Situação</label>
+                  <p className="text-base font-semibold text-gray-900">{precatorios.situacao}</p>
                 </div>
                 <div className="md:col-span-2">
                   <label className="text-sm font-medium text-gray-500">Código de Validação</label>
@@ -228,6 +419,10 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
                   <div>
                     <label className="text-sm font-medium text-gray-500">CNPJ</label>
                     <p className="text-base font-mono text-gray-900">{parceiro.cnpj}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Situação</label>
+                    <p className="text-base font-semibold text-gray-900">{parceiro.situacao}</p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">Adimplente?</label>
@@ -271,7 +466,27 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
               </CardContent>
             </Card>
 
-            {/* Card de Inadimplências */}
+            {parceiro.irregularidades && parceiro.irregularidades.length > 0 && (
+              <Card className="border-2 border-red-200">
+                <CardHeader className="bg-red-50">
+                  <CardTitle className="flex items-center gap-2 text-red-900">
+                    <AlertCircle className="w-5 h-5" />
+                    Irregularidades ({parceiro.irregularidades.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <div className="space-y-3">
+                    {parceiro.irregularidades.map((irreg, idx) => (
+                      <div key={idx} className="p-3 bg-white border border-red-100 rounded-lg flex justify-between items-center">
+                        <p className="text-sm text-gray-900">{irreg.motivo}</p>
+                        <Badge variant="outline" className="text-xs text-red-600">{irreg.status}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {parceiro.inadimplencias && parceiro.inadimplencias.length > 0 && (
               <Card className="border-2 border-yellow-300">
                 <CardHeader className="bg-yellow-50">
@@ -311,6 +526,42 @@ export default function CertidaoDetalhamento({ certidao, onBack }: CertidaoDetal
               </Card>
             )}
           </>
+        );
+
+      case 'debitos_trabalhistas':
+        if (!certidao.camposDebitosTrabalhistas) return null;
+        const trabalhistas = certidao.camposDebitosTrabalhistas;
+        return (
+          <Card>
+            <CardHeader className="bg-[#f7f7f7]">
+              <CardTitle className="flex items-center gap-2 text-[#1a3e3e]">
+                <FileCheck className="w-5 h-5 text-[#2e6a50]" />
+                Informações Específicas
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="text-sm font-medium text-gray-500">CNPJ</label>
+                  <p className="text-base font-mono text-gray-900">{trabalhistas.cnpj}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Status</label>
+                  <Badge className="mt-1">{trabalhistas.status}</Badge>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Arquivo</label>
+                  <p className="text-sm text-gray-900 mt-1">{trabalhistas.arquivo}</p>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="text-sm font-medium text-gray-500">Mensagem</label>
+                  <p className="text-sm text-gray-700 mt-1 bg-gray-50 p-3 rounded-lg border">
+                    {trabalhistas.mensagem}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         );
 
       default:

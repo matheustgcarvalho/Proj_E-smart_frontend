@@ -14,8 +14,10 @@ import MunicipiosView from './components/views/MunicipiosView';
 import MunicipioDetalhamento from './components/municipios/MunicipioDetalhamento';
 import UsuariosView from './components/views/UsuariosView';
 import UnidadesGestorasView from './components/views/UnidadesGestorasView';
+import EntidadesView from './components/views/EntidadesView';
 import EscritoriosView from './components/views/EscritoriosView';
 import EscritorioDetalhamento from './components/escritorios/EscritorioDetalhamento';
+import EnvioRelatoriosView from './components/views/EnvioRelatoriosView';
 import NotificacoesView from './components/views/NotificacoesView';
 import SettingsView from './components/views/SettingsView';
 import { CITIES } from './lib/data';
@@ -161,6 +163,8 @@ function App() {
             }}
           />
         ) : null;
+      case 'entidades':
+        return <EntidadesView />;
       case 'notificacoes':
         return (
           <NotificacoesView 
@@ -170,6 +174,8 @@ function App() {
             }}
           />
         );
+      case 'envio-relatorios':
+        return <EnvioRelatoriosView city={currentCity} />;
       case 'settings':
         return (
           <SettingsView 

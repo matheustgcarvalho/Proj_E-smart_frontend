@@ -29,12 +29,25 @@ export interface CamposTransparenciaFiscal {
   entidade: string;
   numeroCertidao: string;
   hashCertidao: string;
+  statusGeral: string;
+  urlPortal: string;
+  itensTransparencia: { descricao: string; status: string }[];
 }
 
 export interface CamposRegularidadeFGTS {
   cnpj: string;
   numeroCertidao: string;
   mensagem: string;
+  status: string;
+  empresa: string;
+}
+
+export interface CamposRegularidadeRFB {
+  cnpj: string;
+  numeroCertidao: string;
+  situacao: string;
+  status: string;
+  descricaoStatus: string;
 }
 
 export interface CamposDebitosEstaduais {
@@ -42,12 +55,44 @@ export interface CamposDebitosEstaduais {
   razaoSocial: string;
   inscricaoEstadual: string;
   cnpj: string;
+  dividasCount: number;
+  valorTotal: string;
+  saldoDevedor: {
+    totalGeral: string;
+    tributariasAjuizado: string;
+    tributariasNaoAjuizado: string;
+    naoTributariasAjuizado: string;
+    naoTributariasNaoAjuizado: string;
+  };
+  detalhamentoDebitos: {
+    numeroInscricao: string;
+    ajuizada: boolean;
+    faseAtual: string;
+    origem: string;
+    receita: string;
+    saldoDevedor: string;
+    valorOriginal: string;
+    valorPrincipal: string;
+    multa: string;
+    juros: string;
+    honorarios: string;
+    encargos: string;
+    dataInscricao: string;
+    protestada: boolean;
+    descricaoOrigem: string;
+    descricaoReceita: string;
+    codigoReceita: string;
+    numeroProcessoAdministrativo: string;
+    pagarAVista: boolean;
+    parcelavel: boolean;
+  }[];
 }
 
 export interface CamposRegularidadePrecatorios {
   cnpj: string;
   entidade: string;
   codigoValidacao: string;
+  situacao: string;
 }
 
 export interface CamposCadastralParceiro {
@@ -57,6 +102,15 @@ export interface CamposCadastralParceiro {
   possuiInadimplenciaSuspensa: boolean;
   codigoCertidao: string;
   inadimplencias: Inadimplencia[];
+  situacao: string;
+  irregularidades: { motivo: string; status: string }[];
+}
+
+export interface CamposDebitosTrabalhistas {
+  cnpj: string;
+  status: string;
+  arquivo: string;
+  mensagem: string;
 }
 
 export interface Certidao {
@@ -74,9 +128,11 @@ export interface Certidao {
   // Campos específicos opcionais
   camposTransparenciaFiscal?: CamposTransparenciaFiscal;
   camposRegularidadeFGTS?: CamposRegularidadeFGTS;
+  camposRegularidadeRFB?: CamposRegularidadeRFB;
   camposDebitosEstaduais?: CamposDebitosEstaduais;
   camposRegularidadePrecatorios?: CamposRegularidadePrecatorios;
   camposCadastralParceiro?: CamposCadastralParceiro;
+  camposDebitosTrabalhistas?: CamposDebitosTrabalhistas;
 }
 
 export const getDaysRemaining = (expirationDate: string): number => {

@@ -149,11 +149,11 @@ export default function CaucView({ city }: CaucViewProps) {
               <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Última Atualização</div>
               <p className="text-lg font-bold text-gray-900">
                 {city.caucLastUpdate 
-                  ? new Date(city.caucLastUpdate).toLocaleDateString('pt-BR', {
+                  ? `${new Date(city.caucLastUpdate).toLocaleDateString('pt-BR', {
                       day: '2-digit',
                       month: '2-digit',
                       year: 'numeric'
-                    })
+                    })} 10:15`
                   : 'N/A'}
               </p>
             </div>

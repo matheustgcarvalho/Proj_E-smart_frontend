@@ -9,11 +9,13 @@ import {
   ChevronRight,
   LogOut,
   MessageSquare,
+  Send,
   Briefcase,
   Building2,
   Users,
   Building,
-  Bell
+  Bell,
+  Landmark
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -46,6 +48,18 @@ export default function Sidebar({ currentView, onChangeView, isOpen, onToggle, o
       title: 'Gestão de Recursos',
       items: [
         { id: 'convenios', label: 'Convênios', icon: Briefcase },
+      ]
+    },
+    {
+      title: 'Relatórios',
+      items: [
+        { id: 'envio-relatorios', label: 'Envio Relatórios', icon: Send },
+      ]
+    },
+    {
+      title: 'Entidades',
+      items: [
+        { id: 'entidades', label: 'Entidades', icon: Landmark },
       ]
     },
     {
